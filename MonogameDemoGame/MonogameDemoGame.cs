@@ -217,8 +217,8 @@ namespace Game4
             _facingDirection = new Vector2(0f, 0f);
             int xPositionOnScreen = (WidthMidpoint + (_playerPosition.X - _cameraPosition.X));
             int yPositionOnScreen = (HeightMidpoint + (_playerPosition.Y - _cameraPosition.Y));
-            _facingDirection.X = ((float)(x - xPositionOnScreen) / (float)(xPositionOnScreen));
-            _facingDirection.Y = ((float)(y - yPositionOnScreen) / (float)(yPositionOnScreen));
+            _facingDirection.X = ((float)(x - xPositionOnScreen) );
+            _facingDirection.Y = ((float)(y - yPositionOnScreen) );
             float div = 1f/(float)Math.Sqrt(_facingDirection.X*_facingDirection.X + _facingDirection.Y*_facingDirection.Y);
             _facingDirection = new Vector2(_facingDirection.X * div, _facingDirection.Y * div);
             _angle = (float)Math.Atan2(_facingDirection.Y, _facingDirection.X);

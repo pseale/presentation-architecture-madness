@@ -42,6 +42,8 @@ namespace Game4
         private List<int> _gunAngles = new List<int>(); 
         private List<Point> _shrubbery = new List<Point>();
         private Texture2D _shrubberyTexture;
+        private List<ExplosionStruct> _explosions = new List<ExplosionStruct>();
+        private Texture2D _explosionTexture;
 
         public MonogameDemoGame()
             : base()
@@ -129,6 +131,8 @@ namespace Game4
             var yellow = new Color(Color.Yellow, 1f);
             var red = new Color(Color.Red, 1f);
             _collisionSplashTexture.SetData(new Color[9] { red, red, red, red, yellow, red, red, red, red });
+            _explosionTexture = new Texture2D(GraphicsDevice, 8, 8);
+            _explosionTexture.SetData(new Color[64] { red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red });
         }
 
         /// <summary>
@@ -233,7 +237,20 @@ namespace Game4
             KillEnemies();
             UpdateSplashes();
             UpdateLevel();
+            UpdateExplosions();
             base.Update(gameTime);
+        }
+
+        private void UpdateExplosions()
+        {
+            foreach (var explosion in _explosions.ToArray())
+            {
+                explosion.Ticks++;
+                if (explosion.Ticks > 120)
+                {
+                    _explosions.Remove(explosion);
+                }
+            }
         }
 
         private void UpdateLevel()
@@ -272,6 +289,13 @@ namespace Game4
                 if (enemy.Health <= 0)
                 {
                     _enemies.Remove(enemy);
+                    var explosionStruct = new ExplosionStruct(){ Position = enemy.Position, Ticks = 0 };
+                    explosionStruct.Fragments = new List<Vector2>();
+                    for (int i = 0; i < 36; i++)
+                    {
+                        explosionStruct.Fragments.Add(new Vector2(1, 0).Rotate(_randomForSplashes.Next(0, 360)) * _randomForSplashes.Next(0, 10));
+                    }
+                    _explosions.Add(explosionStruct);
                     _playerXp++;
                 }
             }
@@ -397,6 +421,7 @@ namespace Game4
                                          Matrix.CreateTranslation(new Vector3(WidthMidpoint, HeightMidpoint, 0));
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transform);
             DrawShrubbery();
+            DrawExplosions();
             spriteBatch.Draw(_texture, new Vector2(_playerPosition.X, _playerPosition.Y), new Rectangle(0, 0, 32, 32), new Color(Color.White, 1f), _angle, new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
             DrawBullets(spriteBatch, _facingDirection, _playerPosition);
             DrawEnemies(spriteBatch);
@@ -407,6 +432,17 @@ namespace Game4
             }
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        private void DrawExplosions()
+        {
+            foreach (var explosion in _explosions)
+            {
+                foreach (var fragment in explosion.Fragments)
+                {
+                    spriteBatch.Draw(_explosionTexture, explosion.Position + fragment * explosion.Ticks, Color.White);
+                }
+            }
         }
 
         private void DrawShrubbery()
@@ -480,6 +516,13 @@ namespace Game4
     {
         public Vector2 Position { get; set; }
         public Vector2 Direction { get; set; }
+    }
+
+    public class ExplosionStruct
+    {
+        public Vector2 Position { get; set; }
+        public int Ticks { get; set; }
+        public List<Vector2> Fragments { get; set; }
     }
 
     public static class Vector2ExtensionMethods

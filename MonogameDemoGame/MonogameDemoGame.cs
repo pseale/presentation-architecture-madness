@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Net.Mime;
-using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -18,41 +15,52 @@ namespace Game4
         private const int HeightMidpoint = ScreenHeight / 2;
         private const int NoFlexZone = 100;
         private const int GameBorder = 2000;
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private const int EnemiesToSpawn = 400;
+        
+        GraphicsDeviceManager _graphics;
+        SpriteBatch _spriteBatch;
+        
+        private Random _random;
+
         private Texture2D _texture;
         private Texture2D _bulletTexture;
         private Texture2D _enemyTexture;
+        private Texture2D _collisionSplashTexture;
+        private Texture2D _shrubberyTexture;
+        private Texture2D _explosionTexture;
+        private SpriteFont _font;
+
+        private Point _cameraPosition;
+
         private Vector2 _facingDirection;
         private Point _moveDirection;
-        private Point _cameraPosition;
         private Point _playerPosition;
+        private List<int> _gunAngles = new List<int>();
         private bool _firing;
         private List<BulletStruct> _bullets;
-        private SpriteFont _font;
-        private float _angle;
-        private List<EnemyStruct> _enemies = new List<EnemyStruct>();
-        private List<CollisionSplashStruct> _collisionSplashes = new List<CollisionSplashStruct>();
-        private Texture2D _collisionSplashTexture;
-        private Random _randomForSplashes;
         private int _playerXp;
         private int _playerLevel = 1;
+
+        private float _angle;
+        
+        private List<EnemyStruct> _enemies = new List<EnemyStruct>();
+        private List<CollisionSplashStruct> _collisionSplashes = new List<CollisionSplashStruct>();
+
         private bool _triggerPowerUpText;
         private int _powerUpCounter;
-        private List<int> _gunAngles = new List<int>(); 
+        
         private List<Point> _shrubbery = new List<Point>();
-        private Texture2D _shrubberyTexture;
+        
         private List<ExplosionStruct> _explosions = new List<ExplosionStruct>();
-        private Texture2D _explosionTexture;
 
         public MonogameDemoGame()
             : base()
         {
-            _randomForSplashes = new Random();
+            _random = new Random();
 
-            graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = ScreenWidth;
-            graphics.PreferredBackBufferHeight = ScreenHeight;
+            _graphics = new GraphicsDeviceManager(this);
+            _graphics.PreferredBackBufferWidth = ScreenWidth;
+            _graphics.PreferredBackBufferHeight = ScreenHeight;
             IsMouseVisible = true;
             _facingDirection = new Vector2(0f, 1f);
             _moveDirection = new Point();
@@ -67,8 +75,8 @@ namespace Game4
 
         private void SpawnShrubbery()
         {
-            var random = new Random(200);
-            for (int i = 0; i < 400; i++)
+            var random = new Random(200); //I want the exact same seed
+            for (int i = 0; i < EnemiesToSpawn; i++)
             {
                 _shrubbery.Add(new Point(random.Next(-GameBorder, GameBorder), random.Next(-GameBorder, GameBorder)));
             }
@@ -119,17 +127,19 @@ namespace Game4
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+
             _font = Content.Load<SpriteFont>("Font");
             _texture = Content.Load<Texture2D>("a.png");
-            _bulletTexture = new Texture2D(GraphicsDevice, 4, 4);
             _enemyTexture = Content.Load<Texture2D>("b.png");
+            
+            _bulletTexture = new Texture2D(GraphicsDevice, 4, 4);
             _collisionSplashTexture = new Texture2D(GraphicsDevice, 3, 3);
             _shrubberyTexture = Content.Load<Texture2D>("shrubbery.png");
             var magenta = new Color(Color.Magenta, 1f);
-            _bulletTexture.SetData(new Color[16] { magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta });
             var yellow = new Color(Color.Yellow, 1f);
             var red = new Color(Color.Red, 1f);
+            _bulletTexture.SetData(new Color[16] { magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta });
             _collisionSplashTexture.SetData(new Color[9] { red, red, red, red, yellow, red, red, red, red });
             _explosionTexture = new Texture2D(GraphicsDevice, 8, 8);
             _explosionTexture.SetData(new Color[64] { red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red });
@@ -141,7 +151,11 @@ namespace Game4
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            _texture.Dispose();
+            _enemyTexture.Dispose();
+            _bulletTexture.Dispose();
+            _collisionSplashTexture.Dispose();
+            _shrubberyTexture.Dispose();
         }
 
         /// <summary>
@@ -154,40 +168,40 @@ namespace Game4
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            var state = Keyboard.GetState();
+            var keyboardState = Keyboard.GetState();
             _facingDirection = new Vector2(0f, 0f);
 
             _moveDirection = new Point();
-            if (state.IsKeyDown(Keys.Up))
+            if (keyboardState.IsKeyDown(Keys.Up))
             {
                 _moveDirection.Y--;
             }
-            if (state.IsKeyDown(Keys.Down))
+            if (keyboardState.IsKeyDown(Keys.Down))
             {
                 _moveDirection.Y++;
             }
-            if (state.IsKeyDown(Keys.Left))
+            if (keyboardState.IsKeyDown(Keys.Left))
             {
                 _moveDirection.X--;
             }
-            if (state.IsKeyDown(Keys.Right))
+            if (keyboardState.IsKeyDown(Keys.Right))
             {
                 _moveDirection.X++;
             }
 
-            if (state.IsKeyDown(Keys.W))
+            if (keyboardState.IsKeyDown(Keys.W))
             {
                 _moveDirection.Y--;
             }
-            if (state.IsKeyDown(Keys.A))
+            if (keyboardState.IsKeyDown(Keys.A))
             {
                 _moveDirection.X--;
             }
-            if (state.IsKeyDown(Keys.S))
+            if (keyboardState.IsKeyDown(Keys.S))
             {
                 _moveDirection.Y++;
             }
-            if (state.IsKeyDown(Keys.D))
+            if (keyboardState.IsKeyDown(Keys.D))
             {
                 _moveDirection.X++;
             }
@@ -196,8 +210,10 @@ namespace Game4
             
             var mouseState = Mouse.GetState();
             _firing = mouseState.LeftButton == ButtonState.Pressed;
+
             var x = Math.Max(Math.Min(mouseState.Position.X, ScreenWidth), -ScreenWidth);
             var y = Math.Max(Math.Min(mouseState.Position.Y, ScreenHeight), -ScreenHeight);
+            
             _facingDirection = new Vector2(0f, 0f);
             int xPositionOnScreen = (WidthMidpoint + (_playerPosition.X - _cameraPosition.X));
             int yPositionOnScreen = (HeightMidpoint + (_playerPosition.Y - _cameraPosition.Y));
@@ -238,6 +254,7 @@ namespace Game4
             UpdateSplashes();
             UpdateLevel();
             UpdateExplosions();
+
             base.Update(gameTime);
         }
 
@@ -266,7 +283,7 @@ namespace Game4
             if ((_playerLevel * _playerLevel + 1) / 3 < _playerXp)
             {
                 _playerLevel++;
-                _gunAngles.Add((int)Math.Sqrt(_randomForSplashes.Next(2, 250)));
+                _gunAngles.Add((int)Math.Sqrt(_random.Next(2, 250)));
                 _triggerPowerUpText = true;
                 _powerUpCounter = 90;
             }
@@ -293,7 +310,7 @@ namespace Game4
                     explosionStruct.Fragments = new List<Vector2>();
                     for (int i = 0; i < 36; i++)
                     {
-                        explosionStruct.Fragments.Add(new Vector2(1, 0).Rotate(_randomForSplashes.Next(0, 360)) * _randomForSplashes.Next(0, 10));
+                        explosionStruct.Fragments.Add(new Vector2(1, 0).Rotate(_random.Next(0, 360)) * _random.Next(0, 10));
                     }
                     _explosions.Add(explosionStruct);
                     _playerXp++;
@@ -353,7 +370,7 @@ namespace Game4
                 var yDelta = _facingDirection.Y*10f;
                 foreach (var gunAngle in _gunAngles)
                 {
-                    var angle = (int)Math.Sqrt(_randomForSplashes.Next(0, 2*2*gunAngle*gunAngle)) - gunAngle;
+                    var angle = (int)Math.Sqrt(_random.Next(0, 2*2*gunAngle*gunAngle)) - gunAngle;
                     var direction = new Vector2(xDelta, yDelta).Rotate(angle);
 
                     var bullet = new BulletStruct()
@@ -419,18 +436,18 @@ namespace Game4
                                          Matrix.CreateRotationZ(0) *
                                          Matrix.CreateScale(new Vector3(1, 1, 1)) *
                                          Matrix.CreateTranslation(new Vector3(WidthMidpoint, HeightMidpoint, 0));
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transform);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transform);
             DrawShrubbery();
             DrawExplosions();
-            spriteBatch.Draw(_texture, new Vector2(_playerPosition.X, _playerPosition.Y), new Rectangle(0, 0, 32, 32), new Color(Color.White, 1f), _angle, new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
-            DrawBullets(spriteBatch, _facingDirection, _playerPosition);
-            DrawEnemies(spriteBatch);
-            DrawSplashes(spriteBatch);
+            _spriteBatch.Draw(_texture, new Vector2(_playerPosition.X, _playerPosition.Y), new Rectangle(0, 0, 32, 32), new Color(Color.White, 1f), _angle, new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
+            DrawBullets(_spriteBatch);
+            DrawEnemies();
+            DrawSplashes();
             if (_triggerPowerUpText)
             {
-                DrawPowerUpText(spriteBatch);
+                DrawPowerUpText();
             }
-            spriteBatch.End();
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
 
@@ -440,7 +457,7 @@ namespace Game4
             {
                 foreach (var fragment in explosion.Fragments)
                 {
-                    spriteBatch.Draw(_explosionTexture, explosion.Position + fragment * explosion.Ticks, Color.White);
+                    _spriteBatch.Draw(_explosionTexture, explosion.Position + fragment * explosion.Ticks, Color.White);
                 }
             }
         }
@@ -448,22 +465,22 @@ namespace Game4
         private void DrawShrubbery()
         {
             foreach (var shrub in _shrubbery)
-                spriteBatch.Draw(_shrubberyTexture, shrub.ToVector2(), Color.White);
+                _spriteBatch.Draw(_shrubberyTexture, shrub.ToVector2(), Color.White);
         }
 
-        private void DrawPowerUpText(SpriteBatch spriteBatch1)
+        private void DrawPowerUpText()
         {
-            spriteBatch.DrawString(_font, "POWER UP", (_playerPosition - new Point(50, -20)).ToVector2(), Color.Black);
+            _spriteBatch.DrawString(_font, "POWER UP", (_playerPosition - new Point(50, -20)).ToVector2(), Color.Black);
         }
 
-        private void DrawSplashes(SpriteBatch spriteBatch1)
+        private void DrawSplashes()
         {
             foreach (var splash in _collisionSplashes)
             {
                 var directions = new List<int>();
                 for (int i = 0; i < 3; i++)
                 {
-                    var randomNumber = _randomForSplashes.Next(-12, 12);
+                    var randomNumber = _random.Next(-12, 12);
 
                     //like squaring, but keeping the negative-ness of the original number
                     directions.Add((int)randomNumber * Math.Abs(randomNumber));
@@ -472,21 +489,21 @@ namespace Game4
                 foreach (var direction in directions)
                 {
                     var particlePosition = splash.Position + (splash.Direction * splash.SplashCounter).Rotate(direction);
-                    spriteBatch.Draw(_collisionSplashTexture, particlePosition, Color.White);
+                    _spriteBatch.Draw(_collisionSplashTexture, particlePosition, Color.White);
                 }
             }
         }
 
-        private void DrawEnemies(SpriteBatch spriteBatch1)
+        private void DrawEnemies()
         {
             foreach (var enemy in _enemies)
             {
                 var angle = (float)Math.Atan2(enemy.Direction.Y, enemy.Direction.X);
-                spriteBatch.Draw(_enemyTexture, enemy.Position, new Rectangle(0, 0, 32, 32), new Color(Color.White, 1f), angle, new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
+                _spriteBatch.Draw(_enemyTexture, enemy.Position, new Rectangle(0, 0, 32, 32), new Color(Color.White, 1f), angle, new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
             }
         }
 
-        private void DrawBullets(SpriteBatch spriteBatch1, Vector2 direction, Point playerPosition)
+        private void DrawBullets(SpriteBatch spriteBatch1)
         {
             _bullets.ForEach(x => spriteBatch1.Draw(_bulletTexture, new Vector2(x.Position.X - 1.5f, x.Position.Y - 1.5f)));
         }

@@ -17,7 +17,32 @@ namespace Game4
         private const int NoFlexZone = 100;
         private const int GameBorder = 2000;
         private const int EnemiesToSpawn = 400;
-        
+        private const int RandomSeedForShrubbery = 200;
+        private const int RandomSeedForEnemies = 100;
+        private const int NumberOfEnemiesToSpawn = 250;
+        private const int TicksToWaitAtBeginning = 600;
+        private const int EnemyHealth = 100;
+        private const int BulletSize = 4;
+        private const int EnemySize = 32;
+        private const int CollisionSplashSize = 3;
+        private const int ExplosionFragmentSize = 8;
+        private const int ExplosionTicks = 120;
+        private const int PowerUpTicks = 90;
+        private const int CollisionSplashTicks = 10;
+        private const int CollisionFragmentMaxSpeed = 10;
+        private const int FragmentsPerExplosion = 36;
+        private const float BulletSpeed = 10f;
+        private const int PlayerSize = 32;
+        private const int HalfPlayerSize = PlayerSize / 2;
+        private const int EnemyTicksToDoNothing = 60;
+        private const int EnemyTicksToTurn = 90;
+        private const int EnemyTicksToMove = 240;
+        private const string PowerUpText = "POWER UP";
+        private const int NumberOfCollisionSplashParticlesToCreate = 3;
+        private const int MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees = 12;
+        private readonly Color BackgroundColor = Color.White;
+        private readonly Color PowerUpTextColor = Color.Black;
+
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
@@ -89,7 +114,7 @@ namespace Game4
 
         private void SpawnShrubbery()
         {
-            var random = new Random(200); //I want the exact same seed
+            var random = new Random(RandomSeedForShrubbery); //I want the exact same seed
             for (int i = 0; i < EnemiesToSpawn; i++)
             {
                 _shrubbery.Add(CreatePointInBoundary(random));
@@ -98,16 +123,16 @@ namespace Game4
 
         private void SpawnEnemies()
         {
-            var random = new Random(100);  //I want the exact same seed, not sure why honestly.
-            foreach (var i in Enumerable.Range(1, 250))
+            var random = new Random(RandomSeedForEnemies);  //I want the exact same seed, not sure why honestly.
+            foreach (var i in Enumerable.Range(1, NumberOfEnemiesToSpawn))
             {
                 _enemies.Add(new EnemyStruct()
                 {
                     Position = CreatePointInBoundary(random).ToVector2(),
                     Direction = GenerateEnemyDirection(random),
                     State = EnemyState.DoingNothing,
-                    TicksUntilDone = 600,
-                    Health = 100
+                    TicksUntilDone = TicksToWaitAtBeginning,
+                    Health = EnemyHealth
                 });
             }
         }
@@ -166,9 +191,9 @@ namespace Game4
 
         private void LoadTexturesFromArray()
         {
-            _bulletTexture = CreateSquareTexture(Color.Magenta, 4);
-            _collisionSplashTexture = CreateSquareTexture(Color.Red, 3);
-            _explosionTexture = CreateSquareTexture(Color.Red, 8);
+            _bulletTexture = CreateSquareTexture(Color.Magenta, BulletSize);
+            _collisionSplashTexture = CreateSquareTexture(Color.Red, CollisionSplashSize);
+            _explosionTexture = CreateSquareTexture(Color.Red, ExplosionFragmentSize);
         }
 
         /// <summary>
@@ -302,7 +327,7 @@ namespace Game4
             foreach (var explosion in _explosions.ToArray())
             {
                 explosion.Ticks++;
-                if (explosion.Ticks > 120)
+                if (explosion.Ticks > ExplosionTicks)
                 {
                     _explosions.Remove(explosion);
                 }
@@ -322,7 +347,7 @@ namespace Game4
         private void ShowPowerUpText()
         {
             _triggerPowerUpText = true;
-            _powerUpCounter = 90;
+            _powerUpCounter = PowerUpTicks;
         }
 
         private void LevelUp()
@@ -353,7 +378,7 @@ namespace Game4
             foreach (var splash in _collisionSplashes.ToArray())
             {
                 splash.SplashCounter++;
-                if (splash.SplashCounter > 10)
+                if (splash.SplashCounter > CollisionSplashTicks)
                     _collisionSplashes.Remove(splash);
             }
         }
@@ -380,9 +405,9 @@ namespace Game4
         {
             var explosionStruct = new ExplosionStruct() {Position = enemy.Position, Ticks = 0};
             explosionStruct.Fragments = new List<Vector2>();
-            for (int i = 0; i < 36; i++)
+            for (int i = 0; i < FragmentsPerExplosion; i++)
             {
-                explosionStruct.Fragments.Add(new Vector2(1, 0).Rotate(NextRandomNumber(_random, 360)) * NextRandomNumber(_random, 10));
+                explosionStruct.Fragments.Add(new Vector2(1, 0).Rotate(NextRandomNumber(_random, 360)) * NextRandomNumber(_random, CollisionFragmentMaxSpeed));
             }
             _explosions.Add(explosionStruct);
         }
@@ -396,7 +421,7 @@ namespace Game4
         {
             foreach (var bullet in _bullets.ToArray())
                 foreach (var enemy in _enemies)
-                    if (Collides(bullet.Position, 2, enemy.Position, 16))
+                    if (Collides(bullet.Position, BulletSize / 2, enemy.Position, EnemySize / 2))
                         Collide(bullet, enemy);
         }
 
@@ -468,8 +493,8 @@ namespace Game4
 
         private void CreateBullets()
         {
-            var xDelta = _facingDirection.X*10f;
-            var yDelta = _facingDirection.Y*10f;
+            var xDelta = _facingDirection.X * BulletSpeed;
+            var yDelta = _facingDirection.Y * BulletSpeed;
             foreach (var gunAngle in _gunAngles)
             {
                 var angle = (int) GenerateRandomNumberClusteredTowardZero(gunAngle, _random);
@@ -480,7 +505,7 @@ namespace Game4
 
                 var bullet = new BulletStruct()
                 {
-                    Position = new Vector2(_playerPosition.X + 16*_facingDirection.X, _playerPosition.Y + 16*_facingDirection.Y),
+                    Position = new Vector2(_playerPosition.X + HalfPlayerSize * _facingDirection.X, _playerPosition.Y + HalfPlayerSize * _facingDirection.Y),
                     Direction = direction
                 };
 
@@ -531,17 +556,17 @@ namespace Game4
 
         private  void ChangeStateToDoingNothing(EnemyStruct enemy)
         {
-            ChangeEnemyState(enemy, EnemyState.DoingNothing, 60);
+            ChangeEnemyState(enemy, EnemyState.DoingNothing, EnemyTicksToDoNothing);
         }
 
         private  void ChangeStateToTurning(EnemyStruct enemy)
         {
-            ChangeEnemyState(enemy, EnemyState.Turning, 90);
+            ChangeEnemyState(enemy, EnemyState.Turning, EnemyTicksToTurn);
         }
 
         private  void ChangeStateToMoving(EnemyStruct enemy)
         {
-            ChangeEnemyState(enemy, EnemyState.Moving, 240);
+            ChangeEnemyState(enemy, EnemyState.Moving, EnemyTicksToMove);
         }
 
         private  void ChangeEnemyState(EnemyStruct enemy, EnemyState newState, int ticksUntilDone)
@@ -575,7 +600,7 @@ namespace Game4
 
         private void InitializeFrame()
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(BackgroundColor);
 
             //http://www.david-amador.com/2009/10/xna-camera-2d-with-zoom-and-rotation/
             var transform = Matrix.CreateTranslation(new Vector3(-_cameraPosition.X, -_cameraPosition.Y, 0))*
@@ -611,7 +636,7 @@ namespace Game4
 
         private void DrawPowerUpText()
         {
-            _spriteBatch.DrawString(_font, "POWER UP", (_playerPosition - new Point(50, -20)).ToVector2(), Color.Black);
+            _spriteBatch.DrawString(_font, PowerUpText, (_playerPosition - new Point(50, -20)).ToVector2(), PowerUpTextColor);
         }
 
         private void DrawSplashes()
@@ -619,9 +644,9 @@ namespace Game4
             foreach (var splash in _collisionSplashes)
             {
                 var directions = new List<int>();
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < NumberOfCollisionSplashParticlesToCreate; i++)
                 {
-                    int randomNumber = NextRandomNumberBetweenPositiveAndNegative(_random, 12);
+                    int randomNumber = NextRandomNumberBetweenPositiveAndNegative(_random, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees);
 
                     //like squaring, but keeping the negative-ness of the original number
                     directions.Add((int)randomNumber * Math.Abs(randomNumber));
@@ -655,8 +680,8 @@ namespace Game4
 
         private void DrawEntityWithRotation(Texture2D texture, Vector2 position, Vector2 direction)
         {
-            _spriteBatch.Draw(texture, position, new Rectangle(0, 0, 32, 32),
-                new Color(Color.White, 1f), ConvertToAngleInRadians(direction), new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
+            _spriteBatch.Draw(texture, position, new Rectangle(0, 0, PlayerSize, PlayerSize),
+                new Color(Color.White, 1f), ConvertToAngleInRadians(direction), new Vector2(HalfPlayerSize, HalfPlayerSize), 1.0f, SpriteEffects.None, 1);
         }
 
         private float ConvertToAngleInRadians(Vector2 direction)

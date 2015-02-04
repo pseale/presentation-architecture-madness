@@ -13,6 +13,7 @@ namespace Game4
         private const int ScreenHeight = 480;
         private const int WidthMidpoint = ScreenWidth / 2;
         private const int HeightMidpoint = ScreenHeight / 2;
+        private readonly Point Midpoint = new Point(WidthMidpoint, HeightMidpoint);
         private const int NoFlexZone = 100;
         private const int GameBorder = 2000;
         private const int EnemiesToSpawn = 400;
@@ -250,14 +251,11 @@ namespace Game4
 
             var x = Math.Max(Math.Min(mouseState.Position.X, ScreenWidth), -ScreenWidth);
             var y = Math.Max(Math.Min(mouseState.Position.Y, ScreenHeight), -ScreenHeight);
+            var mouse = new Point(x, y);
 
-            _facingDirection = new Vector2(0f, 0f);
-            int xPositionOnScreen = (WidthMidpoint + (_playerPosition.X - _cameraPosition.X));
-            int yPositionOnScreen = (HeightMidpoint + (_playerPosition.Y - _cameraPosition.Y));
-            _facingDirection.X = ((float) (x - xPositionOnScreen));
-            _facingDirection.Y = ((float) (y - yPositionOnScreen));
-            float div = 1f/(float) Math.Sqrt(_facingDirection.X*_facingDirection.X + _facingDirection.Y*_facingDirection.Y);
-            _facingDirection = new Vector2(_facingDirection.X*div, _facingDirection.Y*div);
+            var direction = (mouse - Midpoint - _playerPosition + _cameraPosition).ToVector2();
+            float div = ShrinkVectorTo1Magnitude(_facingDirection);
+            _facingDirection = direction * div;
         }
 
         private void ProcessKeyboardInput()
@@ -655,6 +653,11 @@ namespace Game4
                 .ToArray());
 
             return texture;
+        }
+
+        private float ShrinkVectorTo1Magnitude(Vector2 vector)
+        {
+            return 1f / (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
         }
     }
 

@@ -254,8 +254,7 @@ namespace Game4
             var mouse = new Point(x, y);
 
             var direction = (mouse - Midpoint - _playerPosition + _cameraPosition).ToVector2();
-            float div = ShrinkVectorTo1Magnitude(_facingDirection);
-            _facingDirection = direction * div;
+            _facingDirection = ShrinkVectorTo1Magnitude(direction);
         }
 
         private void ProcessKeyboardInput()
@@ -670,9 +669,10 @@ namespace Game4
             return texture;
         }
 
-        private float ShrinkVectorTo1Magnitude(Vector2 vector)
+        private Vector2 ShrinkVectorTo1Magnitude(Vector2 vector)
         {
-            return 1f / (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
+            var magnitude = 1f / (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
+            return  vector * magnitude;
         }
     }
 

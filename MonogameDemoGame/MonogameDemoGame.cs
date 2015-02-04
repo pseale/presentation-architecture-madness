@@ -116,7 +116,7 @@ namespace Game4
                     Position = new Vector2(random.Next(-GameBorder, GameBorder), random.Next(-GameBorder, GameBorder)),
                     Direction = new Vector2(x, y),
                     IsDoingNothing = true,
-                    TicksUntilDoneDoingNothing = 600,
+                    TicksUntilDone = 600,
                     Health = 100
                 });
             }
@@ -485,25 +485,25 @@ namespace Game4
 
         private static void UpdateEnemy(EnemyStruct enemy)
         {
+            enemy.TicksUntilDone--;
             if (enemy.IsDoingNothing)
             {
-                enemy.TicksUntilDoneDoingNothing--;
-                if (enemy.TicksUntilDoneDoingNothing == 0)
+                //do nothing
+
+                if (enemy.TicksUntilDone == 0)
                     ChangeStateToMoving(enemy);
             }
             else if (enemy.IsMoving)
             {
-                enemy.TicksUntilDoneMoving--;
                 MoveEnemy(enemy);
 
-                if (enemy.TicksUntilDoneMoving == 0)
+                if (enemy.TicksUntilDone == 0)
                     ChangeStateToTurning(enemy);
             }
             else if (enemy.IsTurning)
             {
-                enemy.TicksUntilDoneTurning--;
                 TurnEnemy(enemy);
-                if (enemy.TicksUntilDoneTurning == 0)
+                if (enemy.TicksUntilDone == 0)
                     ChangeStateToDoingNothing(enemy);
             }
         }
@@ -522,21 +522,21 @@ namespace Game4
         {
             enemy.IsTurning = false;
             enemy.IsDoingNothing = true;
-            enemy.TicksUntilDoneDoingNothing = 60;
+            enemy.TicksUntilDone = 60;
         }
 
         private static void ChangeStateToTurning(EnemyStruct enemy)
         {
             enemy.IsMoving = false;
             enemy.IsTurning = true;
-            enemy.TicksUntilDoneTurning = 90;
+            enemy.TicksUntilDone = 90;
         }
 
         private static void ChangeStateToMoving(EnemyStruct enemy)
         {
             enemy.IsDoingNothing = false;
             enemy.IsMoving = true;
-            enemy.TicksUntilDoneMoving = 240;
+            enemy.TicksUntilDone = 240;
         }
 
 
@@ -655,12 +655,11 @@ namespace Game4
     {
         public Vector2 Position { get; set; }
         public Vector2 Direction { get; set; }
+        public int TicksUntilDone { get; set; }
+
         public bool IsMoving { get; set; }
-        public int TicksUntilDoneMoving { get; set; }
         public bool IsDoingNothing { get; set; }
-        public int TicksUntilDoneDoingNothing { get; set; }
         public bool IsTurning { get; set; }
-        public int TicksUntilDoneTurning { get; set; }
         public int Health { get; set; }
     }
 

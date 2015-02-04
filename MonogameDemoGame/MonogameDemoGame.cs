@@ -520,20 +520,23 @@ namespace Game4
 
         private static void ChangeStateToDoingNothing(EnemyStruct enemy)
         {
-            enemy.State = EnemyState.DoingNothing;
-            enemy.TicksUntilDone = 60;
+            ChangeEnemyState(enemy, EnemyState.DoingNothing, 60);
         }
 
         private static void ChangeStateToTurning(EnemyStruct enemy)
         {
-            enemy.State = EnemyState.Turning;
-            enemy.TicksUntilDone = 90;
+            ChangeEnemyState(enemy, EnemyState.Turning, 90);
         }
 
         private static void ChangeStateToMoving(EnemyStruct enemy)
         {
-            enemy.State = EnemyState.Moving;
-            enemy.TicksUntilDone = 240;
+            ChangeEnemyState(enemy, EnemyState.Moving, 240);
+        }
+
+        private static void ChangeEnemyState(EnemyStruct enemy, EnemyState newState, int ticksUntilDone)
+        {
+            enemy.State = newState;
+            enemy.TicksUntilDone = ticksUntilDone;
         }
 
 

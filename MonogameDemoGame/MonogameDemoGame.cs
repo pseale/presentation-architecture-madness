@@ -403,8 +403,23 @@ namespace Game4
 
         private void Collide(BulletStruct bullet, EnemyStruct enemy)
         {
+            DestroyBullet(bullet);
+            HurtEnemy(enemy);
+            CreateSplashEffect(bullet);
+        }
+
+        private void DestroyBullet(BulletStruct bullet)
+        {
             _bullets.Remove(bullet);
+        }
+
+        private static void HurtEnemy(EnemyStruct enemy)
+        {
             enemy.Health--;
+        }
+
+        private void CreateSplashEffect(BulletStruct bullet)
+        {
             _collisionSplashes.Add(new CollisionSplashStruct()
             {
                 Position = bullet.Position,

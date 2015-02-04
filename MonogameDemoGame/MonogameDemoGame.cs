@@ -582,8 +582,7 @@ namespace Game4
 
         private void DrawPlayer()
         {
-            _spriteBatch.Draw(_texture, new Vector2(_playerPosition.X, _playerPosition.Y), new Rectangle(0, 0, 32, 32),
-                new Color(Color.White, 1f), _angle, new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
+            DrawEntityWithRotation(_texture, new Vector2(_playerPosition.X, _playerPosition.Y), _angle);
         }
 
         private void DrawExplosions()
@@ -634,13 +633,19 @@ namespace Game4
             foreach (var enemy in _enemies)
             {
                 var angle = (float)Math.Atan2(enemy.Direction.Y, enemy.Direction.X);
-                _spriteBatch.Draw(_enemyTexture, enemy.Position, new Rectangle(0, 0, 32, 32), new Color(Color.White, 1f), angle, new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
+                DrawEntityWithRotation(_enemyTexture, enemy.Position, angle);
             }
         }
 
         private void DrawBullets(SpriteBatch spriteBatch1)
         {
             _bullets.ForEach(x => spriteBatch1.Draw(_bulletTexture, new Vector2(x.Position.X - 1.5f, x.Position.Y - 1.5f)));
+        }
+
+        private void DrawEntityWithRotation(Texture2D texture, Vector2 position, float rotation)
+        {
+            _spriteBatch.Draw(texture, position, new Rectangle(0, 0, 32, 32),
+                new Color(Color.White, 1f), rotation, new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
         }
     }
 

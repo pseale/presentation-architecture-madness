@@ -149,36 +149,21 @@ namespace Game4
 
         private void LoadFont()
         {
-            _font = Content.Load<SpriteFont>("Font");
+            _font = LoadFontByName("Font");
         }
 
         private void LoadTexturesFromFile()
         {
-            _texture = Content.Load<Texture2D>("a.png");
-            _enemyTexture = Content.Load<Texture2D>("b.png");
-            _shrubberyTexture = Content.Load<Texture2D>("shrubbery.png");
+            _texture = LoadTextureFromFile("a.png");
+            _enemyTexture = LoadTextureFromFile("b.png");
+            _shrubberyTexture = LoadTextureFromFile("shrubbery.png");
         }
 
         private void LoadTexturesFromArray()
         {
-            var magenta = new Color(Color.Magenta, 1f);
-            var yellow = new Color(Color.Yellow, 1f);
-            var red = new Color(Color.Red, 1f);
-            _bulletTexture = new Texture2D(GraphicsDevice, 4, 4);
-            _collisionSplashTexture = new Texture2D(GraphicsDevice, 3, 3);
-            _bulletTexture.SetData(new Color[16]
-            {
-                magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta,
-                magenta, magenta, magenta
-            });
-            _collisionSplashTexture.SetData(new Color[9] {red, red, red, red, yellow, red, red, red, red});
-            _explosionTexture = new Texture2D(GraphicsDevice, 8, 8);
-            _explosionTexture.SetData(new Color[64]
-            {
-                red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red,
-                red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red,
-                red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red
-            });
+            _bulletTexture = CreateSquareTexture(Color.Magenta, 4);
+            _collisionSplashTexture = CreateSquareTexture(Color.Red, 3);
+            _explosionTexture = CreateSquareTexture(Color.Red, 8);
         }
 
         /// <summary>
@@ -648,6 +633,28 @@ namespace Game4
         private float ConvertToAngleInRadians(Vector2 direction)
         {
             return (float)Math.Atan2(direction.Y, direction.X);
+        }
+
+        private SpriteFont LoadFontByName(string fontName)
+        {
+            return Content.Load<SpriteFont>(fontName);
+        }
+
+        private Texture2D LoadTextureFromFile(string fileName)
+        {
+            return Content.Load<Texture2D>(fileName);
+        }
+
+        private Texture2D CreateSquareTexture(Color color, int size)
+        {
+            var texture = new Texture2D(GraphicsDevice, size, size);
+
+            texture.SetData(
+                Enumerable.Range(0, size * size)
+                .Select(cell => color)
+                .ToArray());
+
+            return texture;
         }
     }
 

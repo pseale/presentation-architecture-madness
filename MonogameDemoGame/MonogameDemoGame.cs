@@ -256,8 +256,8 @@ namespace Game4
 
             input.IsFiring = mouseState.LeftButton == ButtonState.Pressed;
 
-            var x = Math.Max(Math.Min(mouseState.Position.X, ScreenWidth), -ScreenWidth);
-            var y = Math.Max(Math.Min(mouseState.Position.Y, ScreenHeight), -ScreenHeight);
+            var x = FitToScreen(mouseState.Position.X, ScreenWidth);
+            var y = FitToScreen(mouseState.Position.Y, ScreenHeight);
             var mouse = new Point(x, y);
 
             var direction = (mouse - Midpoint - _playerPosition + _cameraPosition).ToVector2();
@@ -693,6 +693,11 @@ namespace Game4
         {
             var magnitude = 1f / (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
             return  vector * magnitude;
+        }
+
+        private static int FitToScreen(int cursorPosition, int boundary)
+        {
+            return Math.Max(Math.Min(cursorPosition, boundary), -boundary);
         }
     }
 

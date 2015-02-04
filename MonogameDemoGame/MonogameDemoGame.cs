@@ -112,7 +112,7 @@ namespace Game4
             }
         }
 
-        private static Vector2 GenerateEnemyDirection(Random random)
+        private Vector2 GenerateEnemyDirection(Random random)
         {
             int x = 0;
             int y = 0;
@@ -287,22 +287,22 @@ namespace Game4
             return new KeyboardInputStruct() { MoveDirection = moveDirection };
         }
 
-        private static bool IsMovingUp(KeyboardState keyboardState)
+        private  bool IsMovingUp(KeyboardState keyboardState)
         {
             return keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W);
         }
 
-        private static bool IsMovingDown(KeyboardState keyboardState)
+        private  bool IsMovingDown(KeyboardState keyboardState)
         {
             return keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S);
         }
 
-        private static bool IsMovingLeft(KeyboardState keyboardState)
+        private  bool IsMovingLeft(KeyboardState keyboardState)
         {
             return keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A);
         }
 
-        private static bool IsMovingRight(KeyboardState keyboardState)
+        private  bool IsMovingRight(KeyboardState keyboardState)
         {
             return keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D);
         }
@@ -392,7 +392,7 @@ namespace Game4
             explosionStruct.Fragments = new List<Vector2>();
             for (int i = 0; i < 36; i++)
             {
-                explosionStruct.Fragments.Add(new Vector2(1, 0).Rotate(_random.Next(0, 360))*_random.Next(0, 10));
+                explosionStruct.Fragments.Add(new Vector2(1, 0).Rotate(NextRandomNumber(_random, 360)) * NextRandomNumber(_random, 10));
             }
             _explosions.Add(explosionStruct);
         }
@@ -422,7 +422,7 @@ namespace Game4
             _bullets.Remove(bullet);
         }
 
-        private static void HurtEnemy(EnemyStruct enemy)
+        private  void HurtEnemy(EnemyStruct enemy)
         {
             enemy.Health--;
         }
@@ -504,7 +504,7 @@ namespace Game4
                 UpdateEnemy(enemy);
         }
 
-        private static void UpdateEnemy(EnemyStruct enemy)
+        private  void UpdateEnemy(EnemyStruct enemy)
         {
             enemy.TicksUntilDone--;
             if (enemy.State == EnemyState.DoingNothing)
@@ -529,32 +529,32 @@ namespace Game4
             }
         }
 
-        private static void TurnEnemy(EnemyStruct enemy)
+        private  void TurnEnemy(EnemyStruct enemy)
         {
             enemy.Direction = enemy.Direction.Rotate(1);
         }
 
-        private static void MoveEnemy(EnemyStruct enemy)
+        private  void MoveEnemy(EnemyStruct enemy)
         {
             enemy.Position = enemy.Position + enemy.Direction;
         }
 
-        private static void ChangeStateToDoingNothing(EnemyStruct enemy)
+        private  void ChangeStateToDoingNothing(EnemyStruct enemy)
         {
             ChangeEnemyState(enemy, EnemyState.DoingNothing, 60);
         }
 
-        private static void ChangeStateToTurning(EnemyStruct enemy)
+        private  void ChangeStateToTurning(EnemyStruct enemy)
         {
             ChangeEnemyState(enemy, EnemyState.Turning, 90);
         }
 
-        private static void ChangeStateToMoving(EnemyStruct enemy)
+        private  void ChangeStateToMoving(EnemyStruct enemy)
         {
             ChangeEnemyState(enemy, EnemyState.Moving, 240);
         }
 
-        private static void ChangeEnemyState(EnemyStruct enemy, EnemyState newState, int ticksUntilDone)
+        private  void ChangeEnemyState(EnemyStruct enemy, EnemyState newState, int ticksUntilDone)
         {
             enemy.State = newState;
             enemy.TicksUntilDone = ticksUntilDone;
@@ -631,7 +631,7 @@ namespace Game4
                 var directions = new List<int>();
                 for (int i = 0; i < 3; i++)
                 {
-                    var randomNumber = _random.Next(-12, 12);
+                    int randomNumber = NextRandomNumberBetweenPositiveAndNegative(_random, 12);
 
                     //like squaring, but keeping the negative-ness of the original number
                     directions.Add((int)randomNumber * Math.Abs(randomNumber));
@@ -702,29 +702,44 @@ namespace Game4
             return  vector * magnitude;
         }
 
-        private static int FitToScreen(int cursorPosition, int boundary)
+        private  int FitToScreen(int cursorPosition, int boundary)
         {
             return Math.Max(Math.Min(cursorPosition, boundary), -boundary);
         }
 
-        private static Point CreatePointInBoundary(Random random)
+        private Point CreatePointInBoundary(Random random)
         {
-            return new Point(random.Next(-GameBorder, GameBorder), random.Next(-GameBorder, GameBorder));
+            return new Point(NextRandomNumberBetweenPositiveAndNegative(random, GameBorder), NextRandomNumberBetweenPositiveAndNegative(random, GameBorder));
         }
 
-        private static bool WithinBoundary(float position)
+        private bool WithinBoundary(float position)
         {
             return Math.Abs(position) > GameBorder;
         }
 
-        private static bool GetRandomBool(Random random)
+        private bool GetRandomBool(Random random)
         {
-            return random.Next(0, 2) == 1;
+            return NextRandomNumber(random, 1) == 1;
         }
 
         private double GenerateRandomNumberClusteredTowardZero(int max, Random random)
         {
-            return Math.Sqrt(random.Next(0, max * max + 1));
+            return Math.Sqrt(NextRandomNumber(random, max * max));
+        }
+
+        private int NextRandomNumberBetweenPositiveAndNegative(Random random, int value)
+        {
+            return NextRandomNumber(random, -value, value);
+        }
+
+        private int NextRandomNumber(Random random, int maxValue)
+        {
+            return NextRandomNumber(random, 0, maxValue);
+        }
+
+        private int NextRandomNumber(Random random, int minValue, int maxValue)
+        {
+            return random.Next(minValue, maxValue + 1);
         }
     }
 

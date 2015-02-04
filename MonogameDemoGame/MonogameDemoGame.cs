@@ -101,24 +101,28 @@ namespace Game4
             var random = new Random(100);  //I want the exact same seed, not sure why honestly.
             foreach (var i in Enumerable.Range(1, 250))
             {
-                int x = random.Next(-1, 2);
-                int y = 0;
-                if (x == 0)
-                {
-                    y = random.Next(0, 2);
-                    if (y == 0)
-                        y = -1;
-                }
-
                 _enemies.Add(new EnemyStruct()
                 {
                     Position = CreatePointInBoundary(random).ToVector2(),
-                    Direction = new Vector2(x, y),
+                    Direction = GenerateEnemyDirection(random),
                     State = EnemyState.DoingNothing,
                     TicksUntilDone = 600,
                     Health = 100
                 });
             }
+        }
+
+        private static Vector2 GenerateEnemyDirection(Random random)
+        {
+            int x = 0;
+            int y = 0;
+            if (GetRandomBool(random))
+                x = GetRandomBool(random) ? -1 : 1;
+            else
+                y = GetRandomBool(random) ? 1 : -1;
+
+            var direction = new Vector2(x, y);
+            return direction;
         }
 
         /// <summary>
@@ -708,6 +712,11 @@ namespace Game4
         private static bool WithinBoundary(float position)
         {
             return Math.Abs(position) > GameBorder;
+        }
+
+        private static bool GetRandomBool(Random random)
+        {
+            return random.Next(0, 2) == 1;
         }
     }
 

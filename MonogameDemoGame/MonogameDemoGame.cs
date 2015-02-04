@@ -244,18 +244,20 @@ namespace Game4
         {
             var mouseState = Mouse.GetState();
             
-            var input = new MouseInputStruct();
-
-            input.IsFiring = mouseState.LeftButton == ButtonState.Pressed;
+            var isFiring = mouseState.LeftButton == ButtonState.Pressed;
 
             var x = FitToScreen(mouseState.Position.X, ScreenWidth);
             var y = FitToScreen(mouseState.Position.Y, ScreenHeight);
             var mouse = new Point(x, y);
 
             var direction = (mouse - Midpoint - _playerPosition + _cameraPosition).ToVector2();
-            input.PlayerFacingDirection = ShrinkVectorTo1Magnitude(direction);
-            
-            return input;
+            var normalizedDirection = ShrinkVectorTo1Magnitude(direction);
+
+            return new MouseInputStruct()
+            {
+                IsFiring = isFiring,
+                PlayerFacingDirection = normalizedDirection
+            };
         }
 
         private KeyboardInputStruct ProcessKeyboardInput()

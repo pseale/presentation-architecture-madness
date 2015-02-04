@@ -338,7 +338,7 @@ namespace Game4
         private void LevelUp()
         {
             _playerLevel++;
-            _gunAngles.Add((int) Math.Sqrt(_random.Next(2, 250)));
+            _gunAngles.Add((int) (2 + GenerateRandomNumberClusteredTowardZero(15, _random)));
         }
 
         private void UpdatePowerUpText()
@@ -482,7 +482,10 @@ namespace Game4
             var yDelta = _facingDirection.Y*10f;
             foreach (var gunAngle in _gunAngles)
             {
-                var angle = (int) Math.Sqrt(_random.Next(0, 2*2*gunAngle*gunAngle)) - gunAngle;
+                var angle = (int) GenerateRandomNumberClusteredTowardZero(gunAngle, _random);
+                if (GetRandomBool(_random))
+                    angle = -angle;
+
                 var direction = new Vector2(xDelta, yDelta).Rotate(angle);
 
                 var bullet = new BulletStruct()
@@ -717,6 +720,11 @@ namespace Game4
         private static bool GetRandomBool(Random random)
         {
             return random.Next(0, 2) == 1;
+        }
+
+        private double GenerateRandomNumberClusteredTowardZero(int max, Random random)
+        {
+            return Math.Sqrt(random.Next(0, max * max + 1));
         }
     }
 

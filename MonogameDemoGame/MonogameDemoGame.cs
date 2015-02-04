@@ -142,9 +142,9 @@ namespace Game4
             int x = 0;
             int y = 0;
             if (GetRandomBool(random))
-                x = GetRandomBool(random) ? -1 : 1;
+                x = GenerateRandomNegativeOrPositiveOne(random);
             else
-                y = GetRandomBool(random) ? 1 : -1;
+                y = GenerateRandomNegativeOrPositiveOne(random);
 
             var direction = new Vector2(x, y);
             return direction;
@@ -731,6 +731,11 @@ namespace Game4
         private bool WithinBoundary(float position)
         {
             return Math.Abs(position) > GameBorder;
+        }
+
+        private int GenerateRandomNegativeOrPositiveOne(Random random)
+        {
+            return GetRandomBool(random) ? 1 : -1;
         }
 
         private bool GetRandomBool(Random random)

@@ -19,8 +19,8 @@ namespace Game4
         
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
-        
-        private Random _random;
+
+        private Random _random = new Random();
 
         private Texture2D _texture;
         private Texture2D _bulletTexture;
@@ -37,7 +37,7 @@ namespace Game4
         private Point _playerPosition;
         private List<int> _gunAngles = new List<int>();
         private bool _firing;
-        private List<BulletStruct> _bullets;
+        private List<BulletStruct> _bullets = new List<BulletStruct>();
         private int _playerXp;
         private int _playerLevel = 1;
 
@@ -54,22 +54,37 @@ namespace Game4
         private List<ExplosionStruct> _explosions = new List<ExplosionStruct>();
 
         public MonogameDemoGame()
-            : base()
         {
-            _random = new Random();
+            InitializeMonogame();
 
-            _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = ScreenWidth;
-            _graphics.PreferredBackBufferHeight = ScreenHeight;
-            IsMouseVisible = true;
+            InitializeCamera();
+
+            SpawnPlayer();
+            SpawnEnemies();
+            SpawnShrubbery();
+        }
+
+        private void SpawnPlayer()
+        {
             _facingDirection = new Vector2(0f, 1f);
             _moveDirection = new Point();
             _playerPosition = new Point(WidthMidpoint, HeightMidpoint);
-            _cameraPosition = new Point(WidthMidpoint, HeightMidpoint);
             _gunAngles.Add(0);
-            _bullets = new List<BulletStruct>();
-            SpawnEnemies();
-            SpawnShrubbery();
+        }
+
+        private void InitializeCamera()
+        {
+            _cameraPosition = new Point(WidthMidpoint, HeightMidpoint);
+        }
+
+        private void InitializeMonogame()
+        {
+            _graphics = new GraphicsDeviceManager(this);
+            _graphics.PreferredBackBufferWidth = ScreenWidth;
+            _graphics.PreferredBackBufferHeight = ScreenHeight;
+            
+            IsMouseVisible = true;
+
             Content.RootDirectory = "Content";
         }
 
@@ -129,20 +144,43 @@ namespace Game4
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            LoadFont();
+            LoadTexturesFromFile();
+            LoadTexturesFromArray();
+        }
+
+        private void LoadFont()
+        {
             _font = Content.Load<SpriteFont>("Font");
+        }
+
+        private void LoadTexturesFromFile()
+        {
             _texture = Content.Load<Texture2D>("a.png");
             _enemyTexture = Content.Load<Texture2D>("b.png");
-            
-            _bulletTexture = new Texture2D(GraphicsDevice, 4, 4);
-            _collisionSplashTexture = new Texture2D(GraphicsDevice, 3, 3);
             _shrubberyTexture = Content.Load<Texture2D>("shrubbery.png");
+        }
+
+        private void LoadTexturesFromArray()
+        {
             var magenta = new Color(Color.Magenta, 1f);
             var yellow = new Color(Color.Yellow, 1f);
             var red = new Color(Color.Red, 1f);
-            _bulletTexture.SetData(new Color[16] { magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta });
-            _collisionSplashTexture.SetData(new Color[9] { red, red, red, red, yellow, red, red, red, red });
+            _bulletTexture = new Texture2D(GraphicsDevice, 4, 4);
+            _collisionSplashTexture = new Texture2D(GraphicsDevice, 3, 3);
+            _bulletTexture.SetData(new Color[16]
+            {
+                magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta, magenta,
+                magenta, magenta, magenta
+            });
+            _collisionSplashTexture.SetData(new Color[9] {red, red, red, red, yellow, red, red, red, red});
             _explosionTexture = new Texture2D(GraphicsDevice, 8, 8);
-            _explosionTexture.SetData(new Color[64] { red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red });
+            _explosionTexture.SetData(new Color[64]
+            {
+                red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red,
+                red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red,
+                red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red
+            });
         }
 
         /// <summary>
@@ -150,6 +188,11 @@ namespace Game4
         /// all content.
         /// </summary>
         protected override void UnloadContent()
+        {
+            UnloadTextures();
+        }
+
+        private void UnloadTextures()
         {
             _texture.Dispose();
             _enemyTexture.Dispose();
@@ -168,6 +211,75 @@ namespace Game4
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            ProcessKeyboardInput();
+            ProcessMouseInput();
+
+            MovePlayer();
+            MoveCamera();
+
+            UpdateEnemies();
+            UpdateBullets();
+
+            DetectCollisions();
+            KillEnemies();
+            UpdateSplashes();
+            CheckLevel();
+            UpdateExplosions();
+
+            base.Update(gameTime);
+        }
+
+        private void MoveCamera()
+        {
+            int x2 = _cameraPosition.X;
+            int y2 = _cameraPosition.Y;
+            if (_cameraPosition.X - _playerPosition.X > NoFlexZone)
+            {
+                x2 += _moveDirection.X;
+            }
+
+            if (_cameraPosition.X - _playerPosition.X < -NoFlexZone)
+            {
+                x2 += _moveDirection.X;
+            }
+
+            if (_cameraPosition.Y - _playerPosition.Y > NoFlexZone)
+            {
+                y2 += _moveDirection.Y;
+            }
+
+            if (_cameraPosition.Y - _playerPosition.Y < -NoFlexZone)
+            {
+                y2 += _moveDirection.Y;
+            }
+            _cameraPosition = new Point(x2, y2);
+        }
+
+        private void MovePlayer()
+        {
+            _playerPosition = _playerPosition + _moveDirection;
+        }
+
+        private void ProcessMouseInput()
+        {
+            var mouseState = Mouse.GetState();
+            _firing = mouseState.LeftButton == ButtonState.Pressed;
+
+            var x = Math.Max(Math.Min(mouseState.Position.X, ScreenWidth), -ScreenWidth);
+            var y = Math.Max(Math.Min(mouseState.Position.Y, ScreenHeight), -ScreenHeight);
+
+            _facingDirection = new Vector2(0f, 0f);
+            int xPositionOnScreen = (WidthMidpoint + (_playerPosition.X - _cameraPosition.X));
+            int yPositionOnScreen = (HeightMidpoint + (_playerPosition.Y - _cameraPosition.Y));
+            _facingDirection.X = ((float) (x - xPositionOnScreen));
+            _facingDirection.Y = ((float) (y - yPositionOnScreen));
+            float div = 1f/(float) Math.Sqrt(_facingDirection.X*_facingDirection.X + _facingDirection.Y*_facingDirection.Y);
+            _facingDirection = new Vector2(_facingDirection.X*div, _facingDirection.Y*div);
+            _angle = (float) Math.Atan2(_facingDirection.Y, _facingDirection.X);
+        }
+
+        private void ProcessKeyboardInput()
+        {
             var keyboardState = Keyboard.GetState();
             _facingDirection = new Vector2(0f, 0f);
 
@@ -205,57 +317,6 @@ namespace Game4
             {
                 _moveDirection.X++;
             }
-
-            _playerPosition = _playerPosition + _moveDirection;
-            
-            var mouseState = Mouse.GetState();
-            _firing = mouseState.LeftButton == ButtonState.Pressed;
-
-            var x = Math.Max(Math.Min(mouseState.Position.X, ScreenWidth), -ScreenWidth);
-            var y = Math.Max(Math.Min(mouseState.Position.Y, ScreenHeight), -ScreenHeight);
-            
-            _facingDirection = new Vector2(0f, 0f);
-            int xPositionOnScreen = (WidthMidpoint + (_playerPosition.X - _cameraPosition.X));
-            int yPositionOnScreen = (HeightMidpoint + (_playerPosition.Y - _cameraPosition.Y));
-            _facingDirection.X = ((float)(x - xPositionOnScreen) );
-            _facingDirection.Y = ((float)(y - yPositionOnScreen) );
-            float div = 1f/(float)Math.Sqrt(_facingDirection.X*_facingDirection.X + _facingDirection.Y*_facingDirection.Y);
-            _facingDirection = new Vector2(_facingDirection.X * div, _facingDirection.Y * div);
-            _angle = (float)Math.Atan2(_facingDirection.Y, _facingDirection.X);
-
-            int x2 = _cameraPosition.X;
-            int y2 = _cameraPosition.Y;
-            if (_cameraPosition.X - _playerPosition.X > NoFlexZone)
-            {
-                x2 += _moveDirection.X;
-            }
-
-            if (_cameraPosition.X - _playerPosition.X < -NoFlexZone)
-            {
-                x2 += _moveDirection.X;
-            }
-
-            if (_cameraPosition.Y - _playerPosition.Y > NoFlexZone)
-            {
-                y2 += _moveDirection.Y;
-            }
-
-            if (_cameraPosition.Y - _playerPosition.Y < -NoFlexZone)
-            {
-                y2 += _moveDirection.Y;
-            }
-            _cameraPosition = new Point(x2, y2);
-
-            UpdateEnemies();
-            UpdateBullets();
-
-            DetectCollisions();
-            KillEnemies();
-            UpdateSplashes();
-            UpdateLevel();
-            UpdateExplosions();
-
-            base.Update(gameTime);
         }
 
         private void UpdateExplosions()
@@ -270,7 +331,29 @@ namespace Game4
             }
         }
 
-        private void UpdateLevel()
+        private void CheckLevel()
+        {
+            UpdatePowerUpText();
+            if (ShouldLevelUp())
+            {
+                LevelUp();
+                ShowPowerUpText();
+            }
+        }
+
+        private void ShowPowerUpText()
+        {
+            _triggerPowerUpText = true;
+            _powerUpCounter = 90;
+        }
+
+        private void LevelUp()
+        {
+            _playerLevel++;
+            _gunAngles.Add((int) Math.Sqrt(_random.Next(2, 250)));
+        }
+
+        private void UpdatePowerUpText()
         {
             if (_triggerPowerUpText)
             {
@@ -280,13 +363,11 @@ namespace Game4
                     _triggerPowerUpText = false;
                 }
             }
-            if ((_playerLevel * _playerLevel + 1) / 3 < _playerXp)
-            {
-                _playerLevel++;
-                _gunAngles.Add((int)Math.Sqrt(_random.Next(2, 250)));
-                _triggerPowerUpText = true;
-                _powerUpCounter = 90;
-            }
+        }
+
+        private bool ShouldLevelUp()
+        {
+            return (_playerLevel * _playerLevel + 1) / 3 < _playerXp;
         }
 
         private void UpdateSplashes()
@@ -321,22 +402,21 @@ namespace Game4
         private void DetectCollisions()
         {
             foreach (var bullet in _bullets.ToArray())
-            {
                 foreach (var enemy in _enemies)
-                {
                     if (Collides(bullet.Position, 2, enemy.Position, 16))
-                    {
-                        _bullets.Remove(bullet);
-                        enemy.Health--;
-                        _collisionSplashes.Add(new CollisionSplashStruct()
-                        {
-                            Position = bullet.Position,
-                            Direction = new Vector2() - bullet.Direction,
-                            SplashCounter = 0
-                        });
-                    }
-                }
-            }
+                        Collide(bullet, enemy);
+        }
+
+        private void Collide(BulletStruct bullet, EnemyStruct enemy)
+        {
+            _bullets.Remove(bullet);
+            enemy.Health--;
+            _collisionSplashes.Add(new CollisionSplashStruct()
+            {
+                Position = bullet.Position,
+                Direction = new Vector2() - bullet.Direction,
+                SplashCounter = 0
+            });
         }
 
         private bool Collides(Vector2 position1, int radius1, Vector2 position2, int radius2)
@@ -357,89 +437,120 @@ namespace Game4
 
         private void UpdateBullets()
         {
-            _bullets.ForEach(p => { p.Position = new Vector2(p.Position.X + p.Direction.X, p.Position.Y + p.Direction.Y); });
+            MoveBullets();
+            DeleteBullets();
 
-            var bulletsToDelete = _bullets.Where(x => Math.Abs(x.Position.X) > GameBorder || Math.Abs(x.Position.Y) > GameBorder)
+            if (_firing)
+                CreateBullets();
+        }
+
+        private void MoveBullets()
+        {
+            _bullets.ForEach(p => { p.Position = new Vector2(p.Position.X + p.Direction.X, p.Position.Y + p.Direction.Y); });
+        }
+
+        private void DeleteBullets()
+        {
+            var bulletsToDelete =
+                _bullets.Where(x => Math.Abs(x.Position.X) > GameBorder || Math.Abs(x.Position.Y) > GameBorder)
                     .ToArray();
             foreach (var bulletToDelte in bulletsToDelete)
                 _bullets.Remove(bulletToDelte);
+        }
 
-            if (_firing)
+        private void CreateBullets()
+        {
+            var xDelta = _facingDirection.X*10f;
+            var yDelta = _facingDirection.Y*10f;
+            foreach (var gunAngle in _gunAngles)
             {
-                var xDelta = _facingDirection.X*10f;
-                var yDelta = _facingDirection.Y*10f;
-                foreach (var gunAngle in _gunAngles)
+                var angle = (int) Math.Sqrt(_random.Next(0, 2*2*gunAngle*gunAngle)) - gunAngle;
+                var direction = new Vector2(xDelta, yDelta).Rotate(angle);
+
+                var bullet = new BulletStruct()
                 {
-                    var angle = (int)Math.Sqrt(_random.Next(0, 2*2*gunAngle*gunAngle)) - gunAngle;
-                    var direction = new Vector2(xDelta, yDelta).Rotate(angle);
+                    Position = new Vector2(_playerPosition.X + 16*_facingDirection.X, _playerPosition.Y + 16*_facingDirection.Y),
+                    Direction = direction
+                };
 
-                    var bullet = new BulletStruct()
-                    {
-                        Position = new Vector2(_playerPosition.X + 16 * _facingDirection.X, _playerPosition.Y + 16 * _facingDirection.Y),
-                        Direction = direction
-                    };
-
-                    _bullets.Add(bullet);
-                }
+                _bullets.Add(bullet);
             }
         }
 
         private void UpdateEnemies()
         {
             foreach (var enemy in _enemies)
-            {
-                if (enemy.IsDoingNothing)
-                {
-                    enemy.TicksUntilDoneDoingNothing--;
-                    if (enemy.TicksUntilDoneDoingNothing == 0)
-                    {
-                        enemy.IsDoingNothing = false;
-                        enemy.IsMoving = true;
-                        enemy.TicksUntilDoneMoving = 240;
-                    }
-                } else if (enemy.IsMoving)
-                {
-                    enemy.TicksUntilDoneMoving--;
-                    enemy.Position = enemy.Position + enemy.Direction;
+                UpdateEnemy(enemy);
+        }
 
-                    if (enemy.TicksUntilDoneMoving == 0)
-                    {
-                        enemy.IsMoving = false;
-                        enemy.IsTurning = true;
-                        enemy.TicksUntilDoneTurning = 90;
-                    }
-                } else if (enemy.IsTurning)
-                {
-                    enemy.TicksUntilDoneTurning--;
-                    enemy.Direction = enemy.Direction.Rotate(1);
-                    if (enemy.TicksUntilDoneTurning == 0)
-                    {
-                        enemy.IsTurning = false;
-                        enemy.IsDoingNothing = true;
-                        enemy.TicksUntilDoneDoingNothing = 60;
-                    }
-                }
+        private static void UpdateEnemy(EnemyStruct enemy)
+        {
+            if (enemy.IsDoingNothing)
+            {
+                enemy.TicksUntilDoneDoingNothing--;
+                if (enemy.TicksUntilDoneDoingNothing == 0)
+                    ChangeStateToMoving(enemy);
+            }
+            else if (enemy.IsMoving)
+            {
+                enemy.TicksUntilDoneMoving--;
+                MoveEnemy(enemy);
+
+                if (enemy.TicksUntilDoneMoving == 0)
+                    ChangeStateToTurning(enemy);
+            }
+            else if (enemy.IsTurning)
+            {
+                enemy.TicksUntilDoneTurning--;
+                TurnEnemy(enemy);
+                if (enemy.TicksUntilDoneTurning == 0)
+                    ChangeStateToDoingNothing(enemy);
             }
         }
 
-       
+        private static void TurnEnemy(EnemyStruct enemy)
+        {
+            enemy.Direction = enemy.Direction.Rotate(1);
+        }
+
+        private static void MoveEnemy(EnemyStruct enemy)
+        {
+            enemy.Position = enemy.Position + enemy.Direction;
+        }
+
+        private static void ChangeStateToDoingNothing(EnemyStruct enemy)
+        {
+            enemy.IsTurning = false;
+            enemy.IsDoingNothing = true;
+            enemy.TicksUntilDoneDoingNothing = 60;
+        }
+
+        private static void ChangeStateToTurning(EnemyStruct enemy)
+        {
+            enemy.IsMoving = false;
+            enemy.IsTurning = true;
+            enemy.TicksUntilDoneTurning = 90;
+        }
+
+        private static void ChangeStateToMoving(EnemyStruct enemy)
+        {
+            enemy.IsDoingNothing = false;
+            enemy.IsMoving = true;
+            enemy.TicksUntilDoneMoving = 240;
+        }
+
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            InitializeFrame();
 
-            //http://www.david-amador.com/2009/10/xna-camera-2d-with-zoom-and-rotation/
-            var transform = Matrix.CreateTranslation(new Vector3(-_cameraPosition.X, -_cameraPosition.Y, 0)) *
-                                         Matrix.CreateRotationZ(0) *
-                                         Matrix.CreateScale(new Vector3(1, 1, 1)) *
-                                         Matrix.CreateTranslation(new Vector3(WidthMidpoint, HeightMidpoint, 0));
-            _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transform);
             DrawShrubbery();
             DrawExplosions();
-            _spriteBatch.Draw(_texture, new Vector2(_playerPosition.X, _playerPosition.Y), new Rectangle(0, 0, 32, 32), new Color(Color.White, 1f), _angle, new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
+            DrawPlayer();
             DrawBullets(_spriteBatch);
             DrawEnemies();
             DrawSplashes();
@@ -447,8 +558,32 @@ namespace Game4
             {
                 DrawPowerUpText();
             }
+
+            EndFrame(gameTime);
+        }
+
+        private void InitializeFrame()
+        {
+            GraphicsDevice.Clear(Color.White);
+
+            //http://www.david-amador.com/2009/10/xna-camera-2d-with-zoom-and-rotation/
+            var transform = Matrix.CreateTranslation(new Vector3(-_cameraPosition.X, -_cameraPosition.Y, 0))*
+                            Matrix.CreateRotationZ(0)*
+                            Matrix.CreateScale(new Vector3(1, 1, 1))*
+                            Matrix.CreateTranslation(new Vector3(WidthMidpoint, HeightMidpoint, 0));
+            _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transform);
+        }
+
+        private void EndFrame(GameTime gameTime)
+        {
             _spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        private void DrawPlayer()
+        {
+            _spriteBatch.Draw(_texture, new Vector2(_playerPosition.X, _playerPosition.Y), new Rectangle(0, 0, 32, 32),
+                new Color(Color.White, 1f), _angle, new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
         }
 
         private void DrawExplosions()

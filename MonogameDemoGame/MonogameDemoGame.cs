@@ -260,7 +260,6 @@ namespace Game4
         private void ProcessKeyboardInput()
         {
             var keyboardState = Keyboard.GetState();
-            _facingDirection = new Vector2(0f, 0f);
 
             _moveDirection = new Point();
             if (keyboardState.IsKeyDown(Keys.Up))

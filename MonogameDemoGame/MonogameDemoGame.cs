@@ -92,7 +92,7 @@ namespace Game4
             var random = new Random(200); //I want the exact same seed
             for (int i = 0; i < EnemiesToSpawn; i++)
             {
-                _shrubbery.Add(new Point(random.Next(-GameBorder, GameBorder), random.Next(-GameBorder, GameBorder)));
+                _shrubbery.Add(CreatePointInBoundary(random));
             }
         }
 
@@ -112,7 +112,7 @@ namespace Game4
 
                 _enemies.Add(new EnemyStruct()
                 {
-                    Position = new Vector2(random.Next(-GameBorder, GameBorder), random.Next(-GameBorder, GameBorder)),
+                    Position = CreatePointInBoundary(random).ToVector2(),
                     Direction = new Vector2(x, y),
                     State = EnemyState.DoingNothing,
                     TicksUntilDone = 600,
@@ -698,6 +698,11 @@ namespace Game4
         private static int FitToScreen(int cursorPosition, int boundary)
         {
             return Math.Max(Math.Min(cursorPosition, boundary), -boundary);
+        }
+
+        private static Point CreatePointInBoundary(Random random)
+        {
+            return new Point(random.Next(-GameBorder, GameBorder), random.Next(-GameBorder, GameBorder));
         }
     }
 

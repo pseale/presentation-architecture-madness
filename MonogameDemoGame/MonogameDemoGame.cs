@@ -115,7 +115,7 @@ namespace Game4
                 {
                     Position = new Vector2(random.Next(-GameBorder, GameBorder), random.Next(-GameBorder, GameBorder)),
                     Direction = new Vector2(x, y),
-                    IsDoingNothing = true,
+                    State = EnemyState.DoingNothing,
                     TicksUntilDone = 600,
                     Health = 100
                 });
@@ -486,21 +486,21 @@ namespace Game4
         private static void UpdateEnemy(EnemyStruct enemy)
         {
             enemy.TicksUntilDone--;
-            if (enemy.IsDoingNothing)
+            if (enemy.State == EnemyState.DoingNothing)
             {
                 //do nothing
 
                 if (enemy.TicksUntilDone == 0)
                     ChangeStateToMoving(enemy);
             }
-            else if (enemy.IsMoving)
+            else if (enemy.State == EnemyState.Moving)
             {
                 MoveEnemy(enemy);
 
                 if (enemy.TicksUntilDone == 0)
                     ChangeStateToTurning(enemy);
             }
-            else if (enemy.IsTurning)
+            else if (enemy.State == EnemyState.Turning)
             {
                 TurnEnemy(enemy);
                 if (enemy.TicksUntilDone == 0)
@@ -520,22 +520,19 @@ namespace Game4
 
         private static void ChangeStateToDoingNothing(EnemyStruct enemy)
         {
-            enemy.IsTurning = false;
-            enemy.IsDoingNothing = true;
+            enemy.State = EnemyState.DoingNothing;
             enemy.TicksUntilDone = 60;
         }
 
         private static void ChangeStateToTurning(EnemyStruct enemy)
         {
-            enemy.IsMoving = false;
-            enemy.IsTurning = true;
+            enemy.State = EnemyState.Turning;
             enemy.TicksUntilDone = 90;
         }
 
         private static void ChangeStateToMoving(EnemyStruct enemy)
         {
-            enemy.IsDoingNothing = false;
-            enemy.IsMoving = true;
+            enemy.State = EnemyState.Moving;
             enemy.TicksUntilDone = 240;
         }
 
@@ -657,10 +654,15 @@ namespace Game4
         public Vector2 Direction { get; set; }
         public int TicksUntilDone { get; set; }
 
-        public bool IsMoving { get; set; }
-        public bool IsDoingNothing { get; set; }
-        public bool IsTurning { get; set; }
+        public EnemyState State { get; set; }
         public int Health { get; set; }
+    }
+
+    internal enum EnemyState
+    {
+        DoingNothing,
+        Moving,
+        Turning
     }
 
     public class BulletStruct

@@ -195,9 +195,10 @@ namespace Game4
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            ProcessKeyboardInput();
-
+            var keyboardInput = ProcessKeyboardInput();
             var mouseInput = ProcessMouseInput();
+
+            _moveDirection = keyboardInput.MoveDirection;
             _firing = mouseInput.IsFiring;
             _facingDirection = mouseInput.PlayerFacingDirection;
 
@@ -265,19 +266,21 @@ namespace Game4
             return input;
         }
 
-        private void ProcessKeyboardInput()
+        private KeyboardInputStruct ProcessKeyboardInput()
         {
             var keyboardState = Keyboard.GetState();
 
-            _moveDirection = new Point();
+            var moveDirection = new Point();
             if (IsMovingUp(keyboardState))
-                _moveDirection.Y--;
+                moveDirection.Y--;
             if (IsMovingDown(keyboardState))
-                _moveDirection.Y++;
+                moveDirection.Y++;
             if (IsMovingLeft(keyboardState))
-                _moveDirection.X--;
+                moveDirection.X--;
             if (IsMovingRight(keyboardState))
-                _moveDirection.X++;
+                moveDirection.X++;
+
+            return new KeyboardInputStruct() { MoveDirection = moveDirection };
         }
 
         private static bool IsMovingUp(KeyboardState keyboardState)
@@ -691,6 +694,11 @@ namespace Game4
             var magnitude = 1f / (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
             return  vector * magnitude;
         }
+    }
+
+    internal class KeyboardInputStruct
+    {
+        public Point MoveDirection { get; set; }
     }
 
     internal class MouseInputStruct

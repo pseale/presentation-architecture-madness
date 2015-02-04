@@ -262,39 +262,14 @@ namespace Game4
             var keyboardState = Keyboard.GetState();
 
             _moveDirection = new Point();
-            if (keyboardState.IsKeyDown(Keys.Up))
-            {
+            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
                 _moveDirection.Y--;
-            }
-            if (keyboardState.IsKeyDown(Keys.Down))
-            {
+            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
                 _moveDirection.Y++;
-            }
-            if (keyboardState.IsKeyDown(Keys.Left))
-            {
+            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
                 _moveDirection.X--;
-            }
-            if (keyboardState.IsKeyDown(Keys.Right))
-            {
+            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
                 _moveDirection.X++;
-            }
-
-            if (keyboardState.IsKeyDown(Keys.W))
-            {
-                _moveDirection.Y--;
-            }
-            if (keyboardState.IsKeyDown(Keys.A))
-            {
-                _moveDirection.X--;
-            }
-            if (keyboardState.IsKeyDown(Keys.S))
-            {
-                _moveDirection.Y++;
-            }
-            if (keyboardState.IsKeyDown(Keys.D))
-            {
-                _moveDirection.X++;
-            }
         }
 
         private void UpdateExplosions()

@@ -551,7 +551,7 @@ namespace Game4
             DrawShrubbery();
             DrawExplosions();
             DrawPlayer();
-            DrawBullets(_spriteBatch);
+            DrawBullets();
             DrawEnemies();
             DrawSplashes();
             if (_triggerPowerUpText)
@@ -588,18 +588,14 @@ namespace Game4
         private void DrawExplosions()
         {
             foreach (var explosion in _explosions)
-            {
                 foreach (var fragment in explosion.Fragments)
-                {
-                    _spriteBatch.Draw(_explosionTexture, explosion.Position + fragment * explosion.Ticks, Color.White);
-                }
-            }
+                    DrawEntity(_explosionTexture, explosion.Position + fragment * explosion.Ticks);
         }
 
         private void DrawShrubbery()
         {
             foreach (var shrub in _shrubbery)
-                _spriteBatch.Draw(_shrubberyTexture, shrub.ToVector2(), Color.White);
+                DrawEntity(_shrubberyTexture, shrub.ToVector2());
         }
 
         private void DrawPowerUpText()
@@ -623,7 +619,7 @@ namespace Game4
                 foreach (var direction in directions)
                 {
                     var particlePosition = splash.Position + (splash.Direction * splash.SplashCounter).Rotate(direction);
-                    _spriteBatch.Draw(_collisionSplashTexture, particlePosition, Color.White);
+                    DrawEntity(_collisionSplashTexture, particlePosition);
                 }
             }
         }
@@ -637,9 +633,14 @@ namespace Game4
             }
         }
 
-        private void DrawBullets(SpriteBatch spriteBatch1)
+        private void DrawBullets()
         {
-            _bullets.ForEach(x => spriteBatch1.Draw(_bulletTexture, new Vector2(x.Position.X - 1.5f, x.Position.Y - 1.5f)));
+            _bullets.ForEach(x => DrawEntity(_bulletTexture, new Vector2(x.Position.X - 1.5f, x.Position.Y - 1.5f)));
+        }
+
+        private void DrawEntity(Texture2D texture, Vector2 position)
+        {
+            _spriteBatch.Draw(texture, position);
         }
 
         private void DrawEntityWithRotation(Texture2D texture, Vector2 position, float rotation)

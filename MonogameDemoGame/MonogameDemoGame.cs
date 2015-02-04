@@ -353,7 +353,7 @@ namespace Game4
         private void LevelUp()
         {
             _playerLevel++;
-            _gunAngles.Add((int) (2 + GenerateRandomNumberClusteredTowardZero(15, _random)));
+            _gunAngles.Add((int) (2 + GenerateRandomNumberClusteredTowardZero(_random, 15)));
         }
 
         private void UpdatePowerUpText()
@@ -497,7 +497,7 @@ namespace Game4
             var yDelta = _facingDirection.Y * BulletSpeed;
             foreach (var gunAngle in _gunAngles)
             {
-                var angle = (int) GenerateRandomNumberClusteredTowardZero(gunAngle, _random);
+                var angle = (int) GenerateRandomNumberClusteredTowardZero(_random, gunAngle);
                 if (GetRandomBool(_random))
                     angle = -angle;
 
@@ -539,6 +539,7 @@ namespace Game4
             else if (enemy.State == EnemyState.Turning)
             {
                 TurnEnemy(enemy);
+
                 if (enemy.TicksUntilDone == 0)
                     ChangeStateToDoingNothing(enemy);
             }
@@ -649,7 +650,7 @@ namespace Game4
                     int randomNumber = NextRandomNumberBetweenPositiveAndNegative(_random, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees);
 
                     //like squaring, but keeping the negative-ness of the original number
-                    directions.Add((int)randomNumber * Math.Abs(randomNumber));
+                    directions.Add(randomNumber * Math.Abs(randomNumber));
                 }
 
                 foreach (var direction in directions)
@@ -670,7 +671,7 @@ namespace Game4
 
         private void DrawBullets()
         {
-            _bullets.ForEach(x => DrawEntity(_bulletTexture, new Vector2(x.Position.X - 1.5f, x.Position.Y - 1.5f)));
+            _bullets.ForEach(x => DrawEntity(_bulletTexture, new Vector2(x.Position.X - BulletSize/2, x.Position.Y - BulletSize/2)));
         }
 
         private void DrawEntity(Texture2D texture, Vector2 position)
@@ -737,7 +738,7 @@ namespace Game4
             return NextRandomNumber(random, 1) == 1;
         }
 
-        private double GenerateRandomNumberClusteredTowardZero(int max, Random random)
+        private double GenerateRandomNumberClusteredTowardZero(Random random, int max)
         {
             return Math.Sqrt(NextRandomNumber(random, max * max));
         }

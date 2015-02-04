@@ -466,7 +466,7 @@ namespace Game4
         private void DeleteBullets()
         {
             var bulletsToDelete =
-                _bullets.Where(x => Math.Abs(x.Position.X) > GameBorder || Math.Abs(x.Position.Y) > GameBorder)
+                _bullets.Where(x => WithinBoundary(x.Position.X) || WithinBoundary(x.Position.Y))
                     .ToArray();
             foreach (var bulletToDelte in bulletsToDelete)
                 _bullets.Remove(bulletToDelte);
@@ -703,6 +703,11 @@ namespace Game4
         private static Point CreatePointInBoundary(Random random)
         {
             return new Point(random.Next(-GameBorder, GameBorder), random.Next(-GameBorder, GameBorder));
+        }
+
+        private static bool WithinBoundary(float position)
+        {
+            return Math.Abs(position) > GameBorder;
         }
     }
 

@@ -225,25 +225,13 @@ namespace Game4
         {
             int x2 = _cameraPosition.X;
             int y2 = _cameraPosition.Y;
-            if (_cameraPosition.X - _playerPosition.X > NoFlexZone)
-            {
+        
+            if (IsOutsideOfFlexZone(_cameraPosition.X - _playerPosition.X, NoFlexZone))
                 x2 += _moveDirection.X;
-            }
 
-            if (_cameraPosition.X - _playerPosition.X < -NoFlexZone)
-            {
-                x2 += _moveDirection.X;
-            }
-
-            if (_cameraPosition.Y - _playerPosition.Y > NoFlexZone)
-            {
+            if (IsOutsideOfFlexZone(_cameraPosition.Y - _playerPosition.Y, NoFlexZone))
                 y2 += _moveDirection.Y;
-            }
 
-            if (_cameraPosition.Y - _playerPosition.Y < -NoFlexZone)
-            {
-                y2 += _moveDirection.Y;
-            }
             _cameraPosition = new Point(x2, y2);
         }
 
@@ -740,6 +728,11 @@ namespace Game4
         private int NextRandomNumber(Random random, int minValue, int maxValue)
         {
             return random.Next(minValue, maxValue + 1);
+        }
+
+        private bool IsOutsideOfFlexZone(int distanceFromCamera, int noFlexZone)
+        {
+            return distanceFromCamera > noFlexZone || distanceFromCamera < -noFlexZone;
         }
     }
 

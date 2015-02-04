@@ -41,8 +41,6 @@ namespace Game4
         private int _playerXp;
         private int _playerLevel = 1;
 
-        private float _angle;
-        
         private List<EnemyStruct> _enemies = new List<EnemyStruct>();
         private List<CollisionSplashStruct> _collisionSplashes = new List<CollisionSplashStruct>();
 
@@ -275,7 +273,6 @@ namespace Game4
             _facingDirection.Y = ((float) (y - yPositionOnScreen));
             float div = 1f/(float) Math.Sqrt(_facingDirection.X*_facingDirection.X + _facingDirection.Y*_facingDirection.Y);
             _facingDirection = new Vector2(_facingDirection.X*div, _facingDirection.Y*div);
-            _angle = (float) Math.Atan2(_facingDirection.Y, _facingDirection.X);
         }
 
         private void ProcessKeyboardInput()
@@ -582,7 +579,7 @@ namespace Game4
 
         private void DrawPlayer()
         {
-            DrawEntityWithRotation(_texture, new Vector2(_playerPosition.X, _playerPosition.Y), _angle);
+            DrawEntityWithRotation(_texture, new Vector2(_playerPosition.X, _playerPosition.Y), _facingDirection);
         }
 
         private void DrawExplosions()
@@ -628,8 +625,7 @@ namespace Game4
         {
             foreach (var enemy in _enemies)
             {
-                var angle = (float)Math.Atan2(enemy.Direction.Y, enemy.Direction.X);
-                DrawEntityWithRotation(_enemyTexture, enemy.Position, angle);
+                DrawEntityWithRotation(_enemyTexture, enemy.Position, enemy.Direction);
             }
         }
 
@@ -643,10 +639,15 @@ namespace Game4
             _spriteBatch.Draw(texture, position);
         }
 
-        private void DrawEntityWithRotation(Texture2D texture, Vector2 position, float rotation)
+        private void DrawEntityWithRotation(Texture2D texture, Vector2 position, Vector2 direction)
         {
             _spriteBatch.Draw(texture, position, new Rectangle(0, 0, 32, 32),
-                new Color(Color.White, 1f), rotation, new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
+                new Color(Color.White, 1f), ConvertToAngleInRadians(direction), new Vector2(16f, 16f), 1.0f, SpriteEffects.None, 1);
+        }
+
+        private float ConvertToAngleInRadians(Vector2 direction)
+        {
+            return (float)Math.Atan2(direction.Y, direction.X);
         }
     }
 

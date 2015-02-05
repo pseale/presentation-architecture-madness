@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MonogameDemoGame.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Game4
+namespace MonogameDemoGame
 {
     public class MonogameDemoGame : Game
     {
@@ -141,10 +142,10 @@ namespace Game4
         {
             int x = 0;
             int y = 0;
-            if (GetRandomBool(random))
-                x = GenerateRandomNegativeOrPositiveOne(random);
+            if (RandomHelper.GetRandomBool(random))
+                x = RandomHelper.GenerateRandomNegativeOrPositiveOne(random);
             else
-                y = GenerateRandomNegativeOrPositiveOne(random);
+                y = RandomHelper.GenerateRandomNegativeOrPositiveOne(random);
 
             var direction = new Vector2(x, y);
             return direction;
@@ -353,7 +354,7 @@ namespace Game4
         private void LevelUp()
         {
             _playerLevel++;
-            _gunAngles.Add((int) (2 + GenerateRandomNumberClusteredTowardZero(_random, 15)));
+            _gunAngles.Add((int) (2 + RandomHelper.GenerateRandomNumberClusteredTowardZero(_random, 15)));
         }
 
         private void UpdatePowerUpText()
@@ -407,7 +408,7 @@ namespace Game4
             explosionStruct.Fragments = new List<Vector2>();
             for (int i = 0; i < FragmentsPerExplosion; i++)
             {
-                explosionStruct.Fragments.Add(new Vector2(1, 0).Rotate(NextRandomNumber(_random, 360)) * NextRandomNumber(_random, CollisionFragmentMaxSpeed));
+                explosionStruct.Fragments.Add(new Vector2(1, 0).Rotate(RandomHelper.NextRandomNumber(_random, 360)) * RandomHelper.NextRandomNumber(_random, CollisionFragmentMaxSpeed));
             }
             _explosions.Add(explosionStruct);
         }
@@ -497,8 +498,8 @@ namespace Game4
             var yDelta = _facingDirection.Y * BulletSpeed;
             foreach (var gunAngle in _gunAngles)
             {
-                var angle = (int) GenerateRandomNumberClusteredTowardZero(_random, gunAngle);
-                if (GetRandomBool(_random))
+                var angle = (int) RandomHelper.GenerateRandomNumberClusteredTowardZero(_random, gunAngle);
+                if (RandomHelper.GetRandomBool(_random))
                     angle = -angle;
 
                 var direction = new Vector2(xDelta, yDelta).Rotate(angle);
@@ -647,7 +648,7 @@ namespace Game4
                 var directions = new List<int>();
                 for (int i = 0; i < NumberOfCollisionSplashParticlesToCreate; i++)
                 {
-                    int randomNumber = NextRandomNumberBetweenPositiveAndNegative(_random, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees);
+                    int randomNumber = RandomHelper.NextRandomNumberBetweenPositiveAndNegative(_random, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees);
 
                     //like squaring, but keeping the negative-ness of the original number
                     directions.Add(randomNumber * Math.Abs(randomNumber));
@@ -723,44 +724,14 @@ namespace Game4
             return Math.Max(Math.Min(cursorPosition, boundary), -boundary);
         }
 
-        private Point CreatePointInBoundary(Random random)
+        public Point CreatePointInBoundary(Random random)
         {
-            return new Point(NextRandomNumberBetweenPositiveAndNegative(random, GameBorder), NextRandomNumberBetweenPositiveAndNegative(random, GameBorder));
+            return new Point(RandomHelper.NextRandomNumberBetweenPositiveAndNegative(random, GameBorder), RandomHelper.NextRandomNumberBetweenPositiveAndNegative(random, GameBorder));
         }
 
-        private bool WithinBoundary(float position)
+        public bool WithinBoundary(float position)
         {
             return Math.Abs(position) > GameBorder;
-        }
-
-        private int GenerateRandomNegativeOrPositiveOne(Random random)
-        {
-            return GetRandomBool(random) ? 1 : -1;
-        }
-
-        private bool GetRandomBool(Random random)
-        {
-            return NextRandomNumber(random, 1) == 1;
-        }
-
-        private double GenerateRandomNumberClusteredTowardZero(Random random, int max)
-        {
-            return Math.Sqrt(NextRandomNumber(random, max * max));
-        }
-
-        private int NextRandomNumberBetweenPositiveAndNegative(Random random, int value)
-        {
-            return NextRandomNumber(random, -value, value);
-        }
-
-        private int NextRandomNumber(Random random, int maxValue)
-        {
-            return NextRandomNumber(random, 0, maxValue);
-        }
-
-        private int NextRandomNumber(Random random, int minValue, int maxValue)
-        {
-            return random.Next(minValue, maxValue + 1);
         }
 
         private bool IsOutsideOfFlexZone(int distanceFromCamera, int noFlexZone)

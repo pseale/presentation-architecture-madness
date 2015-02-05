@@ -8,8 +8,8 @@
     <ProjectGuid>{06343C53-9229-41F5-A986-9B5F7D6D5B5B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Game4</RootNamespace>
-    <AssemblyName>Game4</AssemblyName>
+    <RootNamespace>MonogameDemoGame</RootNamespace>
+    <AssemblyName>MonogameDemoGame</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <MonoGameContentBuilderExe>
@@ -43,6 +43,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="MonogameDemoGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

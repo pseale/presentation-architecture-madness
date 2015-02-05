@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 #endregion
 
-namespace Game4
+namespace MonogameDemoGame
 {
 #if WINDOWS || LINUX
     /// <summary>

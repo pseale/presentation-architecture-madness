@@ -119,7 +119,7 @@ namespace MonogameDemoGame
             var random = new Random(RandomSeedForShrubbery); //I want the exact same seed
             for (int i = 0; i < EnemiesToSpawn; i++)
             {
-                _shrubbery.Add(CreatePointInBoundary(random));
+                _shrubbery.Add(BoundaryHelper.CreatePointInBoundary(random, GameBorder));
             }
         }
 
@@ -130,7 +130,7 @@ namespace MonogameDemoGame
             {
                 _enemies.Add(new EnemyStruct()
                 {
-                    Position = CreatePointInBoundary(random).ToVector2(),
+                    Position = BoundaryHelper.CreatePointInBoundary(random, GameBorder).ToVector2(),
                     Direction = GenerateEnemyDirection(random),
                     State = EnemyState.DoingNothing,
                     TicksUntilDone = TicksToWaitAtBeginning,
@@ -487,7 +487,7 @@ namespace MonogameDemoGame
         private void DeleteBullets()
         {
             var bulletsToDelete =
-                _bullets.Where(x => WithinBoundary(x.Position.X) || WithinBoundary(x.Position.Y))
+                _bullets.Where(x => BoundaryHelper.WithinBoundary(x.Position.X, GameBorder) || BoundaryHelper.WithinBoundary(x.Position.Y, GameBorder))
                     .ToArray();
             foreach (var bulletToDelte in bulletsToDelete)
                 _bullets.Remove(bulletToDelte);
@@ -701,16 +701,6 @@ namespace MonogameDemoGame
         private  int FitToScreen(int cursorPosition, int boundary)
         {
             return Math.Max(Math.Min(cursorPosition, boundary), -boundary);
-        }
-
-        public Point CreatePointInBoundary(Random random)
-        {
-            return new Point(RandomHelper.NextRandomNumberBetweenPositiveAndNegative(random, GameBorder), RandomHelper.NextRandomNumberBetweenPositiveAndNegative(random, GameBorder));
-        }
-
-        public bool WithinBoundary(float position)
-        {
-            return Math.Abs(position) > GameBorder;
         }
 
         private bool IsOutsideOfFlexZone(int distanceFromCamera, int noFlexZone)

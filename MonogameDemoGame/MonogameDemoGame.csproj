@@ -46,6 +46,8 @@
     <Compile Include="Helpers\BoundaryHelper.cs" />
     <Compile Include="Helpers\CameraHelper.cs" />
     <Compile Include="Helpers\ContentHelper.cs" />
+    <Compile Include="Helpers\DrawHelper.cs" />
+    <Compile Include="Helpers\InputHelper.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="MonogameDemoGame.cs" />

@@ -4,9 +4,7 @@ using System.Linq;
 using MonogameDemoGame.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonogameDemoGame.Structs;
-using MathHelper = MonogameDemoGame.Helpers.MathHelper;
 
 namespace MonogameDemoGame
 {
@@ -224,11 +222,11 @@ namespace MonogameDemoGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (InputHelper.UserIsTryingToExit())
                 Exit();
 
-            var keyboardInput = ProcessKeyboardInput();
-            var mouseInput = ProcessMouseInput();
+            var keyboardInput = InputHelper.ProcessKeyboardInput();
+            var mouseInput = InputHelper.ProcessMouseInput(Midpoint, _playerPosition, _cameraPosition, ScreenWidth, ScreenHeight);
 
             _moveDirection = keyboardInput.MoveDirection;
             _firing = mouseInput.IsFiring;
@@ -266,63 +264,6 @@ namespace MonogameDemoGame
         private void MovePlayer()
         {
             _playerPosition = _playerPosition + _moveDirection;
-        }
-
-        private MouseInputStruct ProcessMouseInput()
-        {
-            var mouseState = Mouse.GetState();
-            
-            var isFiring = mouseState.LeftButton == ButtonState.Pressed;
-
-            var x = CameraHelper.FitToScreen(mouseState.Position.X, ScreenWidth);
-            var y = CameraHelper.FitToScreen(mouseState.Position.Y, ScreenHeight);
-            var mouse = new Point(x, y);
-
-            var direction = (mouse - Midpoint - _playerPosition + _cameraPosition).ToVector2();
-            var normalizedDirection = MathHelper.ShrinkVectorTo1Magnitude(direction);
-
-            return new MouseInputStruct()
-            {
-                IsFiring = isFiring,
-                PlayerFacingDirection = normalizedDirection
-            };
-        }
-
-        private KeyboardInputStruct ProcessKeyboardInput()
-        {
-            var keyboardState = Keyboard.GetState();
-
-            var moveDirection = new Point();
-            if (IsMovingUp(keyboardState))
-                moveDirection.Y--;
-            if (IsMovingDown(keyboardState))
-                moveDirection.Y++;
-            if (IsMovingLeft(keyboardState))
-                moveDirection.X--;
-            if (IsMovingRight(keyboardState))
-                moveDirection.X++;
-
-            return new KeyboardInputStruct() { MoveDirection = moveDirection };
-        }
-
-        private  bool IsMovingUp(KeyboardState keyboardState)
-        {
-            return keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W);
-        }
-
-        private  bool IsMovingDown(KeyboardState keyboardState)
-        {
-            return keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S);
-        }
-
-        private  bool IsMovingLeft(KeyboardState keyboardState)
-        {
-            return keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A);
-        }
-
-        private  bool IsMovingRight(KeyboardState keyboardState)
-        {
-            return keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D);
         }
 
         private void UpdateExplosions()
@@ -679,19 +620,6 @@ namespace MonogameDemoGame
         }
     }
 
-    public static class DrawHelper
-    {
-        public static void DrawEntityWithRotation(SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Vector2 direction, int playerSize, int halfPlayerSize)
-        {
-            spriteBatch.Draw(texture, position, new Rectangle(0, 0, playerSize, playerSize),
-                new Color(Color.White, 1f), MathHelper.ConvertToAngleInRadians(direction), new Vector2(halfPlayerSize, halfPlayerSize), 1.0f, SpriteEffects.None, 1);
-        }
-
-        public static void DrawEntity(SpriteBatch spriteBatch, Texture2D texture, Vector2 position)
-        {
-            spriteBatch.Draw(texture, position);
-        }
-    }
     public static class Vector2ExtensionMethods
     {
         public static Vector2 Rotate(this Vector2 v, float degrees)

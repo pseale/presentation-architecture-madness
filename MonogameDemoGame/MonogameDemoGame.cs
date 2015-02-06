@@ -5,6 +5,7 @@ using MonogameDemoGame.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonogameDemoGame.Structs;
 
 namespace MonogameDemoGame
 {
@@ -738,54 +739,6 @@ namespace MonogameDemoGame
         {
             return distanceFromCamera > noFlexZone || distanceFromCamera < -noFlexZone;
         }
-    }
-
-    internal class KeyboardInputStruct
-    {
-        public Point MoveDirection { get; set; }
-    }
-
-    internal class MouseInputStruct
-    {
-        public bool IsFiring { get; set; }
-        public Vector2 PlayerFacingDirection { get; set; }
-    }
-
-    internal class CollisionSplashStruct
-    {
-        public Vector2 Position { get; set; }
-        public Vector2 Direction { get; set; }
-        public int SplashCounter { get; set; }
-    }
-
-    internal class EnemyStruct
-    {
-        public Vector2 Position { get; set; }
-        public Vector2 Direction { get; set; }
-        public int TicksUntilDone { get; set; }
-
-        public EnemyState State { get; set; }
-        public int Health { get; set; }
-    }
-
-    internal enum EnemyState
-    {
-        DoingNothing,
-        Moving,
-        Turning
-    }
-
-    public class BulletStruct
-    {
-        public Vector2 Position { get; set; }
-        public Vector2 Direction { get; set; }
-    }
-
-    public class ExplosionStruct
-    {
-        public Vector2 Position { get; set; }
-        public int Ticks { get; set; }
-        public List<Vector2> Fragments { get; set; }
     }
 
     public static class Vector2ExtensionMethods

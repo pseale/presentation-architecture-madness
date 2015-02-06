@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonogameDemoGame.Structs;
+using MathHelper = MonogameDemoGame.Helpers.MathHelper;
 
 namespace MonogameDemoGame
 {
@@ -278,7 +279,7 @@ namespace MonogameDemoGame
             var mouse = new Point(x, y);
 
             var direction = (mouse - Midpoint - _playerPosition + _cameraPosition).ToVector2();
-            var normalizedDirection = ShrinkVectorTo1Magnitude(direction);
+            var normalizedDirection = MathHelper.ShrinkVectorTo1Magnitude(direction);
 
             return new MouseInputStruct()
             {
@@ -684,18 +685,7 @@ namespace MonogameDemoGame
         private void DrawEntityWithRotation(Texture2D texture, Vector2 position, Vector2 direction)
         {
             _spriteBatch.Draw(texture, position, new Rectangle(0, 0, PlayerSize, PlayerSize),
-                new Color(Color.White, 1f), ConvertToAngleInRadians(direction), new Vector2(HalfPlayerSize, HalfPlayerSize), 1.0f, SpriteEffects.None, 1);
-        }
-
-        private float ConvertToAngleInRadians(Vector2 direction)
-        {
-            return (float)Math.Atan2(direction.Y, direction.X);
-        }
-
-        private Vector2 ShrinkVectorTo1Magnitude(Vector2 vector)
-        {
-            var magnitude = 1f / (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
-            return  vector * magnitude;
+                new Color(Color.White, 1f), MathHelper.ConvertToAngleInRadians(direction), new Vector2(HalfPlayerSize, HalfPlayerSize), 1.0f, SpriteEffects.None, 1);
         }
     }
 

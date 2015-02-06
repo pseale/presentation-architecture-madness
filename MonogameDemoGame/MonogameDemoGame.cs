@@ -527,7 +527,7 @@ namespace MonogameDemoGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            InitializeFrame();
+            DrawHelper.InitializeFrame(_spriteBatch, GraphicsDevice, _cameraPosition, WidthMidpoint, HeightMidpoint, BackgroundColor);
 
             DrawShrubbery();
             DrawExplosions();
@@ -540,25 +540,7 @@ namespace MonogameDemoGame
                 DrawPowerUpText();
             }
 
-            EndFrame(gameTime);
-        }
-
-        private void InitializeFrame()
-        {
-            GraphicsDevice.Clear(BackgroundColor);
-
-            //http://www.david-amador.com/2009/10/xna-camera-2d-with-zoom-and-rotation/
-            var transform = Matrix.CreateTranslation(new Vector3(-_cameraPosition.X, -_cameraPosition.Y, 0))*
-                            Matrix.CreateRotationZ(0)*
-                            Matrix.CreateScale(new Vector3(1, 1, 1))*
-                            Matrix.CreateTranslation(new Vector3(WidthMidpoint, HeightMidpoint, 0));
-            _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transform);
-        }
-
-        private void EndFrame(GameTime gameTime)
-        {
-            _spriteBatch.End();
-            base.Draw(gameTime);
+            DrawHelper.EndFrame(_spriteBatch, () => base.Draw(gameTime));
         }
 
         private void DrawPlayer()

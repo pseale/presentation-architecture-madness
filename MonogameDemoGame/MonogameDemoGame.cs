@@ -253,10 +253,10 @@ namespace MonogameDemoGame
             int x2 = _cameraPosition.X;
             int y2 = _cameraPosition.Y;
         
-            if (IsOutsideOfFlexZone(_cameraPosition.X - _playerPosition.X, NoFlexZone))
+            if (CameraHelper.IsOutsideOfFlexZone(_cameraPosition.X - _playerPosition.X, NoFlexZone))
                 x2 += _moveDirection.X;
 
-            if (IsOutsideOfFlexZone(_cameraPosition.Y - _playerPosition.Y, NoFlexZone))
+            if (CameraHelper.IsOutsideOfFlexZone(_cameraPosition.Y - _playerPosition.Y, NoFlexZone))
                 y2 += _moveDirection.Y;
 
             _cameraPosition = new Point(x2, y2);
@@ -273,8 +273,8 @@ namespace MonogameDemoGame
             
             var isFiring = mouseState.LeftButton == ButtonState.Pressed;
 
-            var x = FitToScreen(mouseState.Position.X, ScreenWidth);
-            var y = FitToScreen(mouseState.Position.Y, ScreenHeight);
+            var x = CameraHelper.FitToScreen(mouseState.Position.X, ScreenWidth);
+            var y = CameraHelper.FitToScreen(mouseState.Position.Y, ScreenHeight);
             var mouse = new Point(x, y);
 
             var direction = (mouse - Midpoint - _playerPosition + _cameraPosition).ToVector2();
@@ -696,16 +696,6 @@ namespace MonogameDemoGame
         {
             var magnitude = 1f / (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
             return  vector * magnitude;
-        }
-
-        private  int FitToScreen(int cursorPosition, int boundary)
-        {
-            return Math.Max(Math.Min(cursorPosition, boundary), -boundary);
-        }
-
-        private bool IsOutsideOfFlexZone(int distanceFromCamera, int noFlexZone)
-        {
-            return distanceFromCamera > noFlexZone || distanceFromCamera < -noFlexZone;
         }
     }
 

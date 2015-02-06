@@ -181,21 +181,21 @@ namespace MonogameDemoGame
 
         private void LoadFont()
         {
-            _font = LoadFontByName("Font");
+            _font = ContentHelper.LoadFontByName(Content, "Font");
         }
 
         private void LoadTexturesFromFile()
         {
-            _texture = LoadTextureFromFile("a.png");
-            _enemyTexture = LoadTextureFromFile("b.png");
-            _shrubberyTexture = LoadTextureFromFile("shrubbery.png");
+            _texture = ContentHelper.LoadTextureFromFile(Content, "a.png");
+            _enemyTexture = ContentHelper.LoadTextureFromFile(Content, "b.png");
+            _shrubberyTexture = ContentHelper.LoadTextureFromFile(Content, "shrubbery.png");
         }
 
         private void LoadTexturesFromArray()
         {
-            _bulletTexture = CreateSquareTexture(Color.Magenta, BulletSize);
-            _collisionSplashTexture = CreateSquareTexture(Color.Red, CollisionSplashSize);
-            _explosionTexture = CreateSquareTexture(Color.Red, ExplosionFragmentSize);
+            _bulletTexture = ContentHelper.CreateSquareTexture(GraphicsDevice, Color.Magenta, BulletSize);
+            _collisionSplashTexture = ContentHelper.CreateSquareTexture(GraphicsDevice, Color.Red, CollisionSplashSize);
+            _explosionTexture = ContentHelper.CreateSquareTexture(GraphicsDevice, Color.Red, ExplosionFragmentSize);
         }
 
         /// <summary>
@@ -690,28 +690,6 @@ namespace MonogameDemoGame
         private float ConvertToAngleInRadians(Vector2 direction)
         {
             return (float)Math.Atan2(direction.Y, direction.X);
-        }
-
-        private SpriteFont LoadFontByName(string fontName)
-        {
-            return Content.Load<SpriteFont>(fontName);
-        }
-
-        private Texture2D LoadTextureFromFile(string fileName)
-        {
-            return Content.Load<Texture2D>(fileName);
-        }
-
-        private Texture2D CreateSquareTexture(Color color, int size)
-        {
-            var texture = new Texture2D(GraphicsDevice, size, size);
-
-            texture.SetData(
-                Enumerable.Range(0, size * size)
-                .Select(cell => color)
-                .ToArray());
-
-            return texture;
         }
 
         private Vector2 ShrinkVectorTo1Magnitude(Vector2 vector)

@@ -43,6 +43,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Helpers\ContentHelper.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="MonogameDemoGame.cs" />
     <Compile Include="Program.cs" />

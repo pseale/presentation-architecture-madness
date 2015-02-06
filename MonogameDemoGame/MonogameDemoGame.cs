@@ -591,7 +591,7 @@ namespace MonogameDemoGame
             DrawShrubbery();
             DrawExplosions();
             DrawPlayer();
-            DrawBullets();
+            DrawBullets(_spriteBatch, _bullets);
             DrawEnemies();
             DrawSplashes();
             if (_triggerPowerUpText)
@@ -622,20 +622,20 @@ namespace MonogameDemoGame
 
         private void DrawPlayer()
         {
-            DrawEntityWithRotation(_texture, new Vector2(_playerPosition.X, _playerPosition.Y), _facingDirection);
+            DrawHelper.DrawEntityWithRotation(_spriteBatch, _texture, new Vector2(_playerPosition.X, _playerPosition.Y), _facingDirection, PlayerSize, HalfPlayerSize);
         }
 
         private void DrawExplosions()
         {
             foreach (var explosion in _explosions)
                 foreach (var fragment in explosion.Fragments)
-                    DrawEntity(_explosionTexture, explosion.Position + fragment * explosion.Ticks);
+                    DrawHelper.DrawEntity(_spriteBatch, _explosionTexture, explosion.Position + fragment * explosion.Ticks);
         }
 
         private void DrawShrubbery()
         {
             foreach (var shrub in _shrubbery)
-                DrawEntity(_shrubberyTexture, shrub.ToVector2());
+                DrawHelper.DrawEntity(_spriteBatch, _shrubberyTexture, shrub.ToVector2());
         }
 
         private void DrawPowerUpText()
@@ -659,7 +659,7 @@ namespace MonogameDemoGame
                 foreach (var direction in directions)
                 {
                     var particlePosition = splash.Position + (splash.Direction * splash.SplashCounter).Rotate(direction);
-                    DrawEntity(_collisionSplashTexture, particlePosition);
+                    DrawHelper.DrawEntity(_spriteBatch, _collisionSplashTexture, particlePosition);
                 }
             }
         }
@@ -668,27 +668,30 @@ namespace MonogameDemoGame
         {
             foreach (var enemy in _enemies)
             {
-                DrawEntityWithRotation(_enemyTexture, enemy.Position, enemy.Direction);
+                DrawHelper.DrawEntityWithRotation(_spriteBatch, _enemyTexture, enemy.Position, enemy.Direction, PlayerSize, HalfPlayerSize);
             }
         }
 
-        private void DrawBullets()
+        private void DrawBullets(SpriteBatch spriteBatch, IEnumerable<BulletStruct> bullets)
         {
-            _bullets.ForEach(x => DrawEntity(_bulletTexture, new Vector2(x.Position.X - BulletSize/2, x.Position.Y - BulletSize/2)));
-        }
-
-        private void DrawEntity(Texture2D texture, Vector2 position)
-        {
-            _spriteBatch.Draw(texture, position);
-        }
-
-        private void DrawEntityWithRotation(Texture2D texture, Vector2 position, Vector2 direction)
-        {
-            _spriteBatch.Draw(texture, position, new Rectangle(0, 0, PlayerSize, PlayerSize),
-                new Color(Color.White, 1f), MathHelper.ConvertToAngleInRadians(direction), new Vector2(HalfPlayerSize, HalfPlayerSize), 1.0f, SpriteEffects.None, 1);
+            foreach (var bullet in bullets) 
+                DrawHelper.DrawEntity(spriteBatch, _bulletTexture, new Vector2(bullet.Position.X - BulletSize/2, bullet.Position.Y - BulletSize/2));
         }
     }
 
+    public static class DrawHelper
+    {
+        public static void DrawEntityWithRotation(SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Vector2 direction, int playerSize, int halfPlayerSize)
+        {
+            spriteBatch.Draw(texture, position, new Rectangle(0, 0, playerSize, playerSize),
+                new Color(Color.White, 1f), MathHelper.ConvertToAngleInRadians(direction), new Vector2(halfPlayerSize, halfPlayerSize), 1.0f, SpriteEffects.None, 1);
+        }
+
+        public static void DrawEntity(SpriteBatch spriteBatch, Texture2D texture, Vector2 position)
+        {
+            spriteBatch.Draw(texture, position);
+        }
+    }
     public static class Vector2ExtensionMethods
     {
         public static Vector2 Rotate(this Vector2 v, float degrees)

@@ -49,6 +49,7 @@
     <Compile Include="Helpers\DrawHelper.cs" />
     <Compile Include="Helpers\InputHelper.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
+    <Compile Include="Helpers\PhysicsHelper.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="MonogameDemoGame.cs" />
     <Compile Include="Program.cs" />

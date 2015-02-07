@@ -238,11 +238,9 @@ namespace MonogameDemoGame
         {
             foreach (var explosion in _explosions.ToArray())
             {
-                explosion.Ticks++;
-                if (explosion.Ticks > ExplosionTicks)
-                {
+                var result = ExplosionHelper.Update(explosion, ExplosionTicks);
+                if (result == ExplosionUpdateResult.Remove)
                     _explosions.Remove(explosion);
-                }
             }
         }
 
@@ -315,13 +313,8 @@ namespace MonogameDemoGame
 
         private void CreateExplosion(EnemyStruct enemy)
         {
-            var explosionStruct = new ExplosionStruct() {Position = enemy.Position, Ticks = 0};
-            explosionStruct.Fragments = new List<Vector2>();
-            for (int i = 0; i < FragmentsPerExplosion; i++)
-            {
-                explosionStruct.Fragments.Add(new Vector2(1, 0).Rotate(RandomHelper.NextRandomNumber(_random, 360)) * RandomHelper.NextRandomNumber(_random, CollisionFragmentMaxSpeed));
-            }
-            _explosions.Add(explosionStruct);
+            var explosion = ExplosionHelper.Spawn(_random, enemy, FragmentsPerExplosion, CollisionFragmentMaxSpeed);
+            _explosions.Add(explosion);
         }
 
         private void AwardPlayerExperience()

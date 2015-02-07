@@ -12,7 +12,7 @@ This is a talk about ARCHITECTURE
  	- remind me if I forget to explain the higher-level concept
  - As with all architecture, I carry with me ASSUMPTIONS, which I will gloss over quickly here, and which are borne out of my experience as a corporate software developer:
    - performance only matters at the network/file layers, not CPU/code
-   - long-term developer velocity is the most important target
+   - long-term developer velocity is the most important goal
  - While discussing architecture, we are banning the following words:
  	- Bad
  	- Good
@@ -23,6 +23,7 @@ This is a talk about ARCHITECTURE
  	- cohesion, lower coupling
  	- SOLID
  	- DRY
+  - separation of concerns
  	- "I can have you fired"
  - Instead, we must discuss costs/benefits via specific scenarios (whether user or developer)
 Today we will take a journey together in an orderly descent into MADNESS making discrete changes to our codebase. For each act of this play, we are going to:
@@ -38,6 +39,10 @@ Today we will take a journey together in an orderly descent into MADNESS making 
  - Downsides:
    - Duplication, which leads to bugs
    - Classic spaghetti code
+ - ASIDE: This code is PERFECTLY ACCEPTABLE to write in some contexts. What are those contexts?
+   - spikes
+   - really small apps
+   - possibly even crusty, admin-only parts of a larger app
 
  - ACT II: STRUCTURAL PROGRAMMING
   - behavior is moved into methods to support better coupling and cohesion
@@ -47,6 +52,9 @@ Today we will take a journey together in an orderly descent into MADNESS making 
   - Downsides:
     - Harder to read code from top-to-bottom
   - Aside: even without objects, Wwe can separate what we want "delicious sausage" from how it is made "grind up a whole lot of horse ears"
+  - Aside: Where can we find time to practice this kind of abstraction building? How do I find time to do it?
+    - 1. I never feel rushed - this starts at project planning when I commit to estimates, and what happens when I miss an estimate (which I do)
+    - 2. Test projects are the greatest place to try out all these ideas - not that you should spend all your time in the test project, but that you can risk attempting more creative(bad) designs, which is good practice.
 
  - Act III: OBJECT-ORIENTATION
    - behavior + state = objects
@@ -70,7 +78,15 @@ Today we will take a journey together in an orderly descent into MADNESS making 
     - mixins via dynamic types
     - making everything possible into state machines
 
+
     - Asides to include:
         - chunking theory
         - Conway's Law
         - Miller's Law
+        - Is F# a "pit of success"?
+
+- Takeaways
+  - As you fly higher in the clouds of abstraction, which abstractions you use matter more and more (see DSL example)
+  - With anything you apply, focus on the benefits. If you are not receiving the benefits of the architecture, keep searching. It's not all snake oil. Except when it is in fact, snake oil.
+  - Think of easy, objective ways to raise the bar, then let me know if you figure it out (I haven't).
+  - As a personal note, always 

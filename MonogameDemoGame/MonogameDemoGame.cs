@@ -446,23 +446,8 @@ namespace MonogameDemoGame
 
         private void DrawSplashes()
         {
-            foreach (var splash in _collisionSplashes)
-            {
-                var directions = new List<int>();
-                for (int i = 0; i < NumberOfCollisionSplashParticlesToCreate; i++)
-                {
-                    int randomNumber = RandomHelper.NextRandomNumberBetweenPositiveAndNegative(_random, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees);
-
-                    //like squaring, but keeping the negative-ness of the original number
-                    directions.Add(randomNumber * Math.Abs(randomNumber));
-                }
-
-                foreach (var direction in directions)
-                {
-                    var particlePosition = splash.Position + (splash.Direction * splash.SplashCounter).Rotate(direction);
-                    DrawHelper.DrawEntity(_spriteBatch, _collisionSplashTexture, particlePosition);
-                }
-            }
+            foreach (var item in BulletSplashHelper.Spawn(_random, _collisionSplashes, NumberOfCollisionSplashParticlesToCreate, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees))
+                DrawHelper.DrawEntity(_spriteBatch, _collisionSplashTexture, item);
         }
 
         private void DrawBullets(SpriteBatch spriteBatch, IEnumerable<BulletStruct> bullets)

@@ -74,10 +74,10 @@ namespace MonogameDemoGame
         private List<ExplosionStruct> _explosions = new List<ExplosionStruct>();
         private IBoundaryService _boundaryService;
 
-        public ProgramController(IRandomNumberService randomNumberService, IBoundaryService boundaryService)
+        public ProgramController()
         {
-            _randomNumberService = randomNumberService;
-            _boundaryService = boundaryService;
+            _randomNumberService = new RandomNumberService();
+            _boundaryService = new BoundaryService(new RandomNumberService());
 
             InitializeMonogame();
 

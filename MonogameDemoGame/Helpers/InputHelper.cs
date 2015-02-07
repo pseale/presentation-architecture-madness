@@ -43,17 +43,13 @@ namespace MonogameDemoGame.Helpers
             return new KeyboardInputStruct() { MoveDirection = moveDirection };
         }
 
-        public static MouseInputStruct ProcessMouseInput(Point midpoint, Point playerPosition, Point cameraPosition, int screenWidth, int screenHeight)
+        public static MouseInputStruct ProcessMouseInput(Point midpoint, Point playerPosition, Point cameraPosition)
         {
             var mouseState = Mouse.GetState();
             
             var isFiring = mouseState.LeftButton == ButtonState.Pressed;
 
-            var x = CameraHelper.FitToScreen(mouseState.Position.X, screenWidth);
-            var y = CameraHelper.FitToScreen(mouseState.Position.Y, screenHeight);
-            var mouse = new Point(x, y);
-
-            var direction = (mouse - midpoint - playerPosition + cameraPosition).ToVector2();
+            var direction = (mouseState.Position - midpoint - playerPosition + cameraPosition).ToVector2();
             var normalizedDirection = MathHelper.ShrinkVectorTo1Magnitude(direction);
 
             return new MouseInputStruct()

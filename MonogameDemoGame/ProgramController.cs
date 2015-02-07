@@ -197,7 +197,7 @@ namespace MonogameDemoGame
                 Exit();
 
             var keyboardInput = InputHelper.ProcessKeyboardInput();
-            var mouseInput = InputHelper.ProcessMouseInput(Midpoint, _player.Position, _cameraPosition, ScreenWidth, ScreenHeight);
+            var mouseInput = InputHelper.ProcessMouseInput(Midpoint, _player.Position, _cameraPosition);
 
             PlayerHelper.Update(_player, keyboardInput, mouseInput);
 

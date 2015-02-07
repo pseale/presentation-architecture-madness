@@ -60,14 +60,8 @@ namespace MonogameDemoGame
 
         private Point _cameraPosition;
 
-        private Vector2 _facingDirection;
-        private Point _moveDirection;
-        private Point _playerPosition;
-        private List<int> _gunAngles = new List<int>();
-        private bool _firing;
+        private PlayerStruct _player;
         private List<BulletStruct> _bullets = new List<BulletStruct>();
-        private int _playerXp;
-        private int _playerLevel = 1;
 
         private List<EnemyStruct> _enemies = new List<EnemyStruct>();
         private List<CollisionSplashStruct> _collisionSplashes = new List<CollisionSplashStruct>();
@@ -92,10 +86,7 @@ namespace MonogameDemoGame
 
         private void SpawnPlayer()
         {
-            _facingDirection = new Vector2(0f, 1f);
-            _moveDirection = new Point();
-            _playerPosition = new Point(WidthMidpoint, HeightMidpoint);
-            _gunAngles.Add(0);
+            _player = PlayerHelper.Spawn(Midpoint);
         }
 
         private void InitializeCamera()
@@ -203,11 +194,9 @@ namespace MonogameDemoGame
                 Exit();
 
             var keyboardInput = InputHelper.ProcessKeyboardInput();
-            var mouseInput = InputHelper.ProcessMouseInput(Midpoint, _playerPosition, _cameraPosition, ScreenWidth, ScreenHeight);
+            var mouseInput = InputHelper.ProcessMouseInput(Midpoint, _player.Position, _cameraPosition, ScreenWidth, ScreenHeight);
 
-            _moveDirection = keyboardInput.MoveDirection;
-            _firing = mouseInput.IsFiring;
-            _facingDirection = mouseInput.PlayerFacingDirection;
+            PlayerHelper.Update(_player, keyboardInput, mouseInput);
 
             MovePlayer();
             MoveCamera();
@@ -226,12 +215,12 @@ namespace MonogameDemoGame
 
         private void MoveCamera()
         {
-            _cameraPosition = CameraHelper.CalculateNewPosition(_cameraPosition, _playerPosition, _moveDirection, NoFlexZone);
+            _cameraPosition = CameraHelper.CalculateNewPosition(_cameraPosition, _player.Position, _player.MoveDirection, NoFlexZone);
         }
 
         private void MovePlayer()
         {
-            _playerPosition = _playerPosition + _moveDirection;
+            PlayerHelper.Move(_player);
         }
 
         private void UpdateExplosions()
@@ -262,8 +251,7 @@ namespace MonogameDemoGame
 
         private void LevelUp()
         {
-            _playerLevel++;
-            _gunAngles.Add((int) (2 + RandomHelper.GenerateRandomNumberClusteredTowardZero(_random, 15)));
+            PlayerHelper.LevelUp(_random, _player);
         }
 
         private void UpdatePowerUpText()
@@ -280,7 +268,7 @@ namespace MonogameDemoGame
 
         private bool ShouldLevelUp()
         {
-            return (_playerLevel * _playerLevel + 1) / 3 < _playerXp;
+            return PlayerHelper.ShouldLevelUp(_player);
         }
 
         private void UpdateSplashes()
@@ -319,7 +307,7 @@ namespace MonogameDemoGame
 
         private void AwardPlayerExperience()
         {
-            _playerXp++;
+            PlayerHelper.AwardExperience(_player);
         }
 
         private void DetectCollisions()
@@ -352,7 +340,7 @@ namespace MonogameDemoGame
             MoveBullets();
             DeleteBullets();
 
-            if (_firing)
+            if (_player.IsFiring)
                 CreateBullets();
         }
 
@@ -372,7 +360,7 @@ namespace MonogameDemoGame
 
         private void CreateBullets()
         {
-            _bullets.AddRange(BulletHelper.Spawn(_random, _gunAngles, _facingDirection, _playerPosition, BulletSpeed, HalfPlayerSize));
+            _bullets.AddRange(BulletHelper.Spawn(_random, _player, BulletSpeed, HalfPlayerSize));
         }
 
         private void UpdateEnemies()
@@ -407,7 +395,7 @@ namespace MonogameDemoGame
 
         private void DrawPlayer()
         {
-            DrawHelper.DrawEntityWithRotation(_spriteBatch, _texture, new Vector2(_playerPosition.X, _playerPosition.Y), _facingDirection, PlayerSize, HalfPlayerSize);
+            DrawHelper.DrawEntityWithRotation(_spriteBatch, _texture, _player.Position.ToVector2(), _player.FacingDirection, PlayerSize, HalfPlayerSize);
         }
 
         private void DrawExplosions()
@@ -425,7 +413,7 @@ namespace MonogameDemoGame
 
         private void DrawPowerUpText()
         {
-            _spriteBatch.DrawString(_font, PowerUpText, PowerUpHelper.CalculateTextPosition(_playerPosition), PowerUpTextColor);
+            _spriteBatch.DrawString(_font, PowerUpText, PowerUpHelper.CalculateTextPosition(_player.Position), PowerUpTextColor);
         }
 
         private void DrawSplashes()

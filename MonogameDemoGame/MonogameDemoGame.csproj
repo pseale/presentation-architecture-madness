@@ -48,6 +48,7 @@
     <Compile Include="Core\CollisionHelper.cs" />
     <Compile Include="Core\EnemyHelper.cs" />
     <Compile Include="Core\ExplosionHelper.cs" />
+    <Compile Include="Core\PlayerHelper.cs" />
     <Compile Include="Core\PowerUpHelper.cs" />
     <Compile Include="Core\ShrubberyHelper.cs" />
     <Compile Include="Helpers\BoundaryHelper.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Structs\ExplosionUpdateResult.cs" />
     <Compile Include="Structs\KeyboardInputStruct.cs" />
     <Compile Include="Structs\MouseInputStruct.cs" />
+    <Compile Include="Structs\PlayerStruct.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.3.0.1695, Culture=neutral, processorArchitecture=MSIL">

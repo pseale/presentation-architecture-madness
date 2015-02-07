@@ -8,13 +8,13 @@ namespace MonogameDemoGame.Core
 {
     public static class BulletHelper
     {
-        public static IEnumerable<BulletStruct> Spawn(Random random, List<int> gunAngles, Vector2 facingDirection, Point playerPosition, float bulletSpeed, int halfPlayerSize)
+        public static IEnumerable<BulletStruct> Spawn(Random random, PlayerStruct player, float bulletSpeed, int halfPlayerSize)
         {
             var list = new List<BulletStruct>();
 
-            var xDelta = facingDirection.X * bulletSpeed;
-            var yDelta = facingDirection.Y * bulletSpeed;
-            foreach (var gunAngle in gunAngles)
+            var xDelta = player.FacingDirection.X * bulletSpeed;
+            var yDelta = player.FacingDirection.Y * bulletSpeed;
+            foreach (var gunAngle in player.GunAngles)
             {
                 var angle = (int)RandomHelper.GenerateRandomNumberClusteredTowardZero(random, gunAngle);
                 if (RandomHelper.GetRandomBool(random))
@@ -24,7 +24,7 @@ namespace MonogameDemoGame.Core
 
                 var bullet = new BulletStruct()
                 {
-                    Position = new Vector2(playerPosition.X + halfPlayerSize * facingDirection.X, playerPosition.Y + halfPlayerSize * facingDirection.Y),
+                    Position = new Vector2(player.Position.X + halfPlayerSize * player.FacingDirection.X, player.Position.Y + halfPlayerSize * player.FacingDirection.Y),
                     Direction = direction
                 };
 

@@ -23,7 +23,7 @@ namespace MonogameDemoGame
         {
             try
             {
-                using (var game = new ProgramController(new RandomNumberService()))
+                using (var game = new ProgramController(new RandomNumberService(), new BoundaryService(new RandomNumberService())))
                     game.Run();
             }
             catch (Exception e)

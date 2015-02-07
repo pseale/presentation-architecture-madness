@@ -1,15 +1,13 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using MonogameDemoGame.Helpers;
+﻿using Microsoft.Xna.Framework;
 using MonogameDemoGame.Services;
 
 namespace MonogameDemoGame.Core
 {
     public static class ShrubberyHelper
     {
-        public static Point Spawn(IRandomNumberService randomNumberService, int gameBorder)
+        public static Point Spawn(IBoundaryService boundaryService)
         {
-            return BoundaryHelper.CreatePointInBoundary(randomNumberService, gameBorder);
+            return boundaryService.CreatePointInBoundary();
         }
     }
 }

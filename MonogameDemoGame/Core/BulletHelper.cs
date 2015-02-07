@@ -35,10 +35,10 @@ namespace MonogameDemoGame.Core
             return list;
         }
 
-        public static bool ShouldBeDeleted(BulletStruct bullet, int gameBorder)
+        public static bool ShouldBeDeleted(IBoundaryService boundaryService, BulletStruct bullet)
         {
-            return BoundaryHelper.OutOfBounds(bullet.Position.X, gameBorder) 
-                   || BoundaryHelper.OutOfBounds(bullet.Position.Y, gameBorder);
+            return boundaryService.OutOfBounds(bullet.Position.X)
+                   || boundaryService.OutOfBounds(bullet.Position.Y);
         }
 
         public static void Move(BulletStruct bullet)

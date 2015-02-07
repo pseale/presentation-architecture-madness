@@ -11,7 +11,7 @@ namespace MonogameDemoGame.Core
 {
     public static class EnemyHelper
     {
-        public static IEnumerable<EnemyStruct> SpawnEnemies(int randomSeedForEnemies, int numberOfEnemiesToSpawn, int gameBorder, int ticksToWaitAtBeginning, int enemyHealth)
+        public static IEnumerable<EnemyStruct> SpawnEnemies(IBoundaryService boundaryService, int randomSeedForEnemies, int numberOfEnemiesToSpawn, int ticksToWaitAtBeginning, int enemyHealth)
         {
             var list = new List<EnemyStruct>();
             var randomNumberService = new RandomNumberService(randomSeedForEnemies);
@@ -19,7 +19,7 @@ namespace MonogameDemoGame.Core
             {
                 list.Add(new EnemyStruct()
                 {
-                    Position = BoundaryHelper.CreatePointInBoundary(randomNumberService, gameBorder).ToVector2(),
+                    Position = boundaryService.CreatePointInBoundary().ToVector2(),
                     Direction = GenerateEnemyDirection(randomNumberService),
                     State = EnemyState.DoingNothing,
                     TicksUntilDone = ticksToWaitAtBeginning,

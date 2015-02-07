@@ -18,7 +18,6 @@ namespace MonogameDemoGame
         private const int HeightMidpoint = ScreenHeight / 2;
         private readonly Point Midpoint = new Point(WidthMidpoint, HeightMidpoint);
         private const int NoFlexZone = 100;
-        private const int GameBorder = 2000;
         private const int EnemiesToSpawn = 400;
         private const int RandomSeedForShrubbery = 200;
         private const int RandomSeedForEnemies = 100;
@@ -73,9 +72,13 @@ namespace MonogameDemoGame
         private List<Point> _shrubbery = new List<Point>();
         
         private List<ExplosionStruct> _explosions = new List<ExplosionStruct>();
+        private IBoundaryService _boundaryService;
 
-        public ProgramController()
+        public ProgramController(IRandomNumberService randomNumberService, IBoundaryService boundaryService)
         {
+            _randomNumberService = randomNumberService;
+            _boundaryService = boundaryService;
+
             InitializeMonogame();
 
             InitializeCamera();
@@ -83,12 +86,6 @@ namespace MonogameDemoGame
             SpawnPlayer();
             SpawnEnemies();
             SpawnShrubbery();
-        }
-
-        public ProgramController(IRandomNumberService randomNumberService)
-            :this()
-        {
-            _randomNumberService = randomNumberService;
         }
 
         private void SpawnPlayer()
@@ -114,17 +111,15 @@ namespace MonogameDemoGame
 
         private void SpawnShrubbery()
         {
-            var randomNumberService = new RandomNumberService(RandomSeedForShrubbery);
-
             for (int i = 0; i < EnemiesToSpawn; i++)
             {
-                _shrubbery.Add(ShrubberyHelper.Spawn(randomNumberService, GameBorder));
+                _shrubbery.Add(ShrubberyHelper.Spawn(_boundaryService));
             }
         }
 
         private void SpawnEnemies()
         {
-            _enemies.AddRange(EnemyHelper.SpawnEnemies(RandomSeedForEnemies, NumberOfEnemiesToSpawn, GameBorder, TicksToWaitAtBeginning, EnemyHealth));
+            _enemies.AddRange(EnemyHelper.SpawnEnemies(_boundaryService, RandomSeedForEnemies, NumberOfEnemiesToSpawn, TicksToWaitAtBeginning, EnemyHealth));
         }
 
         /// <summary>
@@ -360,7 +355,7 @@ namespace MonogameDemoGame
         private void DeleteBullets()
         {
             var bulletsToDelete = _bullets
-                .Where(x => BulletHelper.ShouldBeDeleted(x, GameBorder))
+                .Where(x => BulletHelper.ShouldBeDeleted(_boundaryService, x))
                 .ToArray();
             foreach (var bulletToDelte in bulletsToDelete)
                 _bullets.Remove(bulletToDelte);

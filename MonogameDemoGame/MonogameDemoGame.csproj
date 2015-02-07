@@ -44,6 +44,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Core\EnemyHelper.cs" />
+    <Compile Include="Core\ShrubberyHelper.cs" />
     <Compile Include="Helpers\BoundaryHelper.cs" />
     <Compile Include="Helpers\CameraHelper.cs" />
     <Compile Include="Helpers\ContentHelper.cs" />

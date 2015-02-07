@@ -119,7 +119,7 @@ namespace MonogameDemoGame
             var random = new Random(RandomSeedForShrubbery); //I want the exact same seed
             for (int i = 0; i < EnemiesToSpawn; i++)
             {
-                _shrubbery.Add(BoundaryHelper.CreatePointInBoundary(random, GameBorder));
+                _shrubbery.Add(ShrubberyHelper.Spawn(random, GameBorder));
             }
         }
 

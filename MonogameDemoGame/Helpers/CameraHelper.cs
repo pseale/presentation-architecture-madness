@@ -17,7 +17,7 @@ namespace MonogameDemoGame.Helpers
 
         public static Point Spawn(Point midpoint)
         {
-            return midpoint;
+            return new Point(midpoint.X, midpoint.Y);
         }
 
         public static Point CalculateNewPosition(Point cameraPosition, Point playerPosition, Point moveDirection, int noFlexZone)

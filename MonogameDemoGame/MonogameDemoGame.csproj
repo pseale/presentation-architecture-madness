@@ -46,6 +46,7 @@
     <Compile Include="Core\BulletHelper.cs" />
     <Compile Include="Core\CollisionHelper.cs" />
     <Compile Include="Core\EnemyHelper.cs" />
+    <Compile Include="Core\PowerUpHelper.cs" />
     <Compile Include="Core\ShrubberyHelper.cs" />
     <Compile Include="Helpers\BoundaryHelper.cs" />
     <Compile Include="Helpers\CameraHelper.cs" />

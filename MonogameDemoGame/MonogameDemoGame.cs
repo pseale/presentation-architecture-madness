@@ -441,7 +441,7 @@ namespace MonogameDemoGame
 
         private void DrawPowerUpText()
         {
-            _spriteBatch.DrawString(_font, PowerUpText, (_playerPosition - new Point(50, -20)).ToVector2(), PowerUpTextColor);
+            _spriteBatch.DrawString(_font, PowerUpText, PowerUpHelper.CalculateTextPosition(_playerPosition), PowerUpTextColor);
         }
 
         private void DrawSplashes()

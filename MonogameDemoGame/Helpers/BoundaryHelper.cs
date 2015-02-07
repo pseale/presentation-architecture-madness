@@ -5,7 +5,7 @@ namespace MonogameDemoGame.Helpers
 {
     public static class BoundaryHelper
     {
-        public static bool WithinBoundary(float position, int gameBorder)
+        public static bool OutOfBounds(float position, int gameBorder)
         {
             return Math.Abs(position) > gameBorder;
         }

@@ -379,38 +379,21 @@ namespace MonogameDemoGame
 
         private void MoveBullets()
         {
-            _bullets.ForEach(p => { p.Position = new Vector2(p.Position.X + p.Direction.X, p.Position.Y + p.Direction.Y); });
+            _bullets.ForEach(p => BulletHelper.Move(p));
         }
 
         private void DeleteBullets()
         {
-            var bulletsToDelete =
-                _bullets.Where(x => BoundaryHelper.WithinBoundary(x.Position.X, GameBorder) || BoundaryHelper.WithinBoundary(x.Position.Y, GameBorder))
-                    .ToArray();
+            var bulletsToDelete = _bullets
+                .Where(x => BulletHelper.ShouldBeDeleted(x, GameBorder))
+                .ToArray();
             foreach (var bulletToDelte in bulletsToDelete)
                 _bullets.Remove(bulletToDelte);
         }
 
         private void CreateBullets()
         {
-            var xDelta = _facingDirection.X * BulletSpeed;
-            var yDelta = _facingDirection.Y * BulletSpeed;
-            foreach (var gunAngle in _gunAngles)
-            {
-                var angle = (int) RandomHelper.GenerateRandomNumberClusteredTowardZero(_random, gunAngle);
-                if (RandomHelper.GetRandomBool(_random))
-                    angle = -angle;
-
-                var direction = new Vector2(xDelta, yDelta).Rotate(angle);
-
-                var bullet = new BulletStruct()
-                {
-                    Position = new Vector2(_playerPosition.X + HalfPlayerSize * _facingDirection.X, _playerPosition.Y + HalfPlayerSize * _facingDirection.Y),
-                    Direction = direction
-                };
-
-                _bullets.Add(bullet);
-            }
+            _bullets.AddRange(BulletHelper.Spawn(_random, _gunAngles, _facingDirection, _playerPosition, BulletSpeed, HalfPlayerSize));
         }
 
         private void UpdateEnemies()

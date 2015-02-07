@@ -360,12 +360,7 @@ namespace MonogameDemoGame
 
         private void CreateSplashEffect(BulletStruct bullet)
         {
-            _collisionSplashes.Add(new CollisionSplashStruct()
-            {
-                Position = bullet.Position,
-                Direction = new Vector2() - bullet.Direction,
-                SplashCounter = 0
-            });
+            _collisionSplashes.Add(CollisionHelper.Spawn(bullet));
         }
 
         private void UpdateBullets()

@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Xna.Framework;
 
 namespace MonogameDemoGame.Helpers
 {
@@ -12,6 +13,25 @@ namespace MonogameDemoGame.Helpers
         public static int FitToScreen(int cursorPosition, int boundary)
         {
             return Math.Max(Math.Min(cursorPosition, boundary), -boundary);
+        }
+
+        public static Point Spawn(Point midpoint)
+        {
+            return midpoint;
+        }
+
+        public static Point CalculateNewPosition(Point cameraPosition, Point playerPosition, Point moveDirection, int noFlexZone)
+        {
+            int x2 = cameraPosition.X;
+            int y2 = cameraPosition.Y;
+
+            if (CameraHelper.IsOutsideOfFlexZone(cameraPosition.X - playerPosition.X, noFlexZone))
+                x2 += moveDirection.X;
+
+            if (CameraHelper.IsOutsideOfFlexZone(cameraPosition.Y - playerPosition.Y, noFlexZone))
+                y2 += moveDirection.Y;
+
+            return new Point(x2, y2);
         }
     }
 }

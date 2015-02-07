@@ -100,7 +100,7 @@ namespace MonogameDemoGame
 
         private void InitializeCamera()
         {
-            _cameraPosition = new Point(WidthMidpoint, HeightMidpoint);
+            _cameraPosition = CameraHelper.Spawn(Midpoint);
         }
 
         private void InitializeMonogame()
@@ -226,16 +226,7 @@ namespace MonogameDemoGame
 
         private void MoveCamera()
         {
-            int x2 = _cameraPosition.X;
-            int y2 = _cameraPosition.Y;
-        
-            if (CameraHelper.IsOutsideOfFlexZone(_cameraPosition.X - _playerPosition.X, NoFlexZone))
-                x2 += _moveDirection.X;
-
-            if (CameraHelper.IsOutsideOfFlexZone(_cameraPosition.Y - _playerPosition.Y, NoFlexZone))
-                y2 += _moveDirection.Y;
-
-            _cameraPosition = new Point(x2, y2);
+            _cameraPosition = CameraHelper.CalculateNewPosition(_cameraPosition, _playerPosition, _moveDirection, NoFlexZone);
         }
 
         private void MovePlayer()

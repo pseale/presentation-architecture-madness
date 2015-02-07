@@ -456,20 +456,4 @@ namespace MonogameDemoGame
                 DrawHelper.DrawEntity(spriteBatch, _bulletTexture, new Vector2(bullet.Position.X - BulletSize/2, bullet.Position.Y - BulletSize/2));
         }
     }
-
-    public static class Vector2ExtensionMethods
-    {
-        public static Vector2 Rotate(this Vector2 v, float degrees)
-        {
-            float Deg2Rad = ((float)(2 * Math.PI)/ 360f);
-            float sin = (float)Math.Sin(degrees * Deg2Rad);
-            float cos = (float)Math.Cos(degrees * Deg2Rad);
-
-            float tx = v.X;
-            float ty = v.Y;
-            v.X = (cos * tx) - (sin * ty);
-            v.Y = (sin * tx) + (cos * ty);
-            return v;
-        }
-    }
 }

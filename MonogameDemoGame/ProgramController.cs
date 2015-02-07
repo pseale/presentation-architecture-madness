@@ -9,7 +9,7 @@ using MonogameDemoGame.Structs;
 
 namespace MonogameDemoGame
 {
-    public class MonogameDemoGame : Game
+    public class ProgramController : Game
     {
         private const int ScreenWidth = 640;
         private const int ScreenHeight = 480;
@@ -73,7 +73,7 @@ namespace MonogameDemoGame
         
         private List<ExplosionStruct> _explosions = new List<ExplosionStruct>();
 
-        public MonogameDemoGame()
+        public ProgramController()
         {
             InitializeMonogame();
 

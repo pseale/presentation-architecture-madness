@@ -5,6 +5,7 @@ using MonogameDemoGame.Core;
 using MonogameDemoGame.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonogameDemoGame.Services;
 using MonogameDemoGame.Structs;
 
 namespace MonogameDemoGame
@@ -48,7 +49,7 @@ namespace MonogameDemoGame
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
-        private Random _random = new Random();
+        private IRandomNumberService _randomNumberService;
 
         private Texture2D _texture;
         private Texture2D _bulletTexture;
@@ -84,6 +85,12 @@ namespace MonogameDemoGame
             SpawnShrubbery();
         }
 
+        public ProgramController(IRandomNumberService randomNumberService)
+            :this()
+        {
+            _randomNumberService = randomNumberService;
+        }
+
         private void SpawnPlayer()
         {
             _player = PlayerHelper.Spawn(Midpoint);
@@ -107,10 +114,11 @@ namespace MonogameDemoGame
 
         private void SpawnShrubbery()
         {
-            var random = new Random(RandomSeedForShrubbery); //I want the exact same seed
+            var randomNumberService = new RandomNumberService(RandomSeedForShrubbery);
+
             for (int i = 0; i < EnemiesToSpawn; i++)
             {
-                _shrubbery.Add(ShrubberyHelper.Spawn(random, GameBorder));
+                _shrubbery.Add(ShrubberyHelper.Spawn(randomNumberService, GameBorder));
             }
         }
 
@@ -251,7 +259,7 @@ namespace MonogameDemoGame
 
         private void LevelUp()
         {
-            PlayerHelper.LevelUp(_random, _player);
+            PlayerHelper.LevelUp(_randomNumberService, _player);
         }
 
         private void UpdatePowerUpText()
@@ -301,7 +309,7 @@ namespace MonogameDemoGame
 
         private void CreateExplosion(EnemyStruct enemy)
         {
-            var explosion = ExplosionHelper.Spawn(_random, enemy, FragmentsPerExplosion, CollisionFragmentMaxSpeed);
+            var explosion = ExplosionHelper.Spawn(_randomNumberService, enemy, FragmentsPerExplosion, CollisionFragmentMaxSpeed);
             _explosions.Add(explosion);
         }
 
@@ -360,7 +368,7 @@ namespace MonogameDemoGame
 
         private void CreateBullets()
         {
-            _bullets.AddRange(BulletHelper.Spawn(_random, _player, BulletSpeed, HalfPlayerSize));
+            _bullets.AddRange(BulletHelper.Spawn(_randomNumberService, _player, BulletSpeed, HalfPlayerSize));
         }
 
         private void UpdateEnemies()
@@ -418,7 +426,7 @@ namespace MonogameDemoGame
 
         private void DrawSplashes()
         {
-            foreach (var item in BulletSplashHelper.Spawn(_random, _collisionSplashes, NumberOfCollisionSplashParticlesToCreate, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees))
+            foreach (var item in BulletSplashHelper.Spawn(_randomNumberService, _collisionSplashes, NumberOfCollisionSplashParticlesToCreate, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees))
                 DrawHelper.DrawEntity(_spriteBatch, _collisionSplashTexture, item);
         }
 

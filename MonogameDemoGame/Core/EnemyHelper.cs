@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonogameDemoGame.Helpers;
+using MonogameDemoGame.Services;
 using MonogameDemoGame.Structs;
 
 namespace MonogameDemoGame.Core
@@ -13,13 +14,13 @@ namespace MonogameDemoGame.Core
         public static IEnumerable<EnemyStruct> SpawnEnemies(int randomSeedForEnemies, int numberOfEnemiesToSpawn, int gameBorder, int ticksToWaitAtBeginning, int enemyHealth)
         {
             var list = new List<EnemyStruct>();
-            var random = new Random(randomSeedForEnemies);  //I want the exact same seed, not sure why honestly.
+            var randomNumberService = new RandomNumberService(randomSeedForEnemies);
             foreach (var i in Enumerable.Range(1, numberOfEnemiesToSpawn))
             {
                 list.Add(new EnemyStruct()
                 {
-                    Position = BoundaryHelper.CreatePointInBoundary(random, gameBorder).ToVector2(),
-                    Direction = GenerateEnemyDirection(random),
+                    Position = BoundaryHelper.CreatePointInBoundary(randomNumberService, gameBorder).ToVector2(),
+                    Direction = GenerateEnemyDirection(randomNumberService),
                     State = EnemyState.DoingNothing,
                     TicksUntilDone = ticksToWaitAtBeginning,
                     Health = enemyHealth
@@ -28,14 +29,14 @@ namespace MonogameDemoGame.Core
             return list;
         }
 
-        public static Vector2 GenerateEnemyDirection(Random random)
+        public static Vector2 GenerateEnemyDirection(IRandomNumberService randomNumberService)
         {
             int x = 0;
             int y = 0;
-            if (RandomHelper.GetRandomBool(random))
-                x = RandomHelper.GenerateRandomNegativeOrPositiveOne(random);
+            if (randomNumberService.GetRandomBool())
+                x = randomNumberService.GenerateRandomNegativeOrPositiveOne();
             else
-                y = RandomHelper.GenerateRandomNegativeOrPositiveOne(random);
+                y = randomNumberService.GenerateRandomNegativeOrPositiveOne();
 
             var direction = new Vector2(x, y);
             return direction;

@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using MonogameDemoGame.Services;
 
 namespace MonogameDemoGame.Helpers
 {
@@ -10,9 +11,9 @@ namespace MonogameDemoGame.Helpers
             return Math.Abs(position) > gameBorder;
         }
 
-        public static Point CreatePointInBoundary(Random random, int gameBorder)
+        public static Point CreatePointInBoundary(IRandomNumberService random, int gameBorder)
         {
-            return new Point(RandomHelper.NextRandomNumberBetweenPositiveAndNegative(random, gameBorder), RandomHelper.NextRandomNumberBetweenPositiveAndNegative(random, gameBorder));
+            return new Point(random.NextRandomNumberBetweenPositiveAndNegative(gameBorder), random.NextRandomNumberBetweenPositiveAndNegative(gameBorder));
         }
     }
 }

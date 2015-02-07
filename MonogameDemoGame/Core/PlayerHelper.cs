@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using MonogameDemoGame.Helpers;
+using MonogameDemoGame.Services;
 using MonogameDemoGame.Structs;
 
 namespace MonogameDemoGame.Core
@@ -32,10 +33,10 @@ namespace MonogameDemoGame.Core
             player.Position = player.Position + player.MoveDirection;
         }
 
-        public static void LevelUp(Random random, PlayerStruct player)
+        public static void LevelUp(IRandomNumberService randomNumberService, PlayerStruct player)
         {
             player.Level++;
-            player.GunAngles.Add((int)(2 + RandomHelper.GenerateRandomNumberClusteredTowardZero(random, 15)));
+            player.GunAngles.Add((int)(1 + randomNumberService.GenerateRandomNumberClusteredTowardZero(15)));
         }
 
         public static bool ShouldLevelUp(PlayerStruct player)

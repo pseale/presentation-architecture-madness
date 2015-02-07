@@ -1,7 +1,10 @@
 ﻿#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using MonogameDemoGame.Services;
+
 #endregion
 
 namespace MonogameDemoGame
@@ -18,8 +21,18 @@ namespace MonogameDemoGame
         [STAThread]
         static void Main()
         {
-            using (var game = new MonogameDemoGame())
-                game.Run();
+            try
+            {
+                using (var game = new ProgramController(new RandomNumberService()))
+                    game.Run();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                Debug.WriteLine(e.ToString());
+
+                throw;
+            }
         }
     }
 #endif

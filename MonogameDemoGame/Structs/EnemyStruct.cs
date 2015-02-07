@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 
 namespace MonogameDemoGame.Structs
 {
-    internal class EnemyStruct
+    public class EnemyStruct
     {
         public Vector2 Position { get; set; }
         public Vector2 Direction { get; set; }

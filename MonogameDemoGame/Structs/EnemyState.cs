@@ -1,6 +1,6 @@
 namespace MonogameDemoGame.Structs
 {
-    internal enum EnemyState
+    public enum EnemyState
     {
         DoingNothing,
         Moving,

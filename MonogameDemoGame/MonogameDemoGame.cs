@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MonogameDemoGame.Core;
 using MonogameDemoGame.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -124,31 +125,7 @@ namespace MonogameDemoGame
 
         private void SpawnEnemies()
         {
-            var random = new Random(RandomSeedForEnemies);  //I want the exact same seed, not sure why honestly.
-            foreach (var i in Enumerable.Range(1, NumberOfEnemiesToSpawn))
-            {
-                _enemies.Add(new EnemyStruct()
-                {
-                    Position = BoundaryHelper.CreatePointInBoundary(random, GameBorder).ToVector2(),
-                    Direction = GenerateEnemyDirection(random),
-                    State = EnemyState.DoingNothing,
-                    TicksUntilDone = TicksToWaitAtBeginning,
-                    Health = EnemyHealth
-                });
-            }
-        }
-
-        private Vector2 GenerateEnemyDirection(Random random)
-        {
-            int x = 0;
-            int y = 0;
-            if (RandomHelper.GetRandomBool(random))
-                x = RandomHelper.GenerateRandomNegativeOrPositiveOne(random);
-            else
-                y = RandomHelper.GenerateRandomNegativeOrPositiveOne(random);
-
-            var direction = new Vector2(x, y);
-            return direction;
+            _enemies.AddRange(EnemyHelper.SpawnEnemies(RandomSeedForEnemies, NumberOfEnemiesToSpawn, GameBorder, TicksToWaitAtBeginning, EnemyHealth));
         }
 
         /// <summary>
@@ -239,7 +216,7 @@ namespace MonogameDemoGame
             UpdateBullets();
 
             DetectCollisions();
-            KillEnemies();
+            KillEnemies(_enemies);
             UpdateSplashes();
             CheckLevel();
             UpdateExplosions();
@@ -327,11 +304,11 @@ namespace MonogameDemoGame
             }
         }
 
-        private void KillEnemies()
+        private void KillEnemies(List<EnemyStruct> enemies)
         {
-            foreach (var enemy in _enemies.ToArray())
+            foreach (var enemy in enemies.ToArray())
             {
-                if (enemy.Health <= 0)
+                if (EnemyHelper.HasNoHealth(enemy))
                 {
                     KillEnemy(enemy);
                     CreateExplosion(enemy);
@@ -372,18 +349,13 @@ namespace MonogameDemoGame
         private void Collide(BulletStruct bullet, EnemyStruct enemy)
         {
             DestroyBullet(bullet);
-            HurtEnemy(enemy);
+            EnemyHelper.HurtEnemy(enemy);
             CreateSplashEffect(bullet);
         }
 
         private void DestroyBullet(BulletStruct bullet)
         {
             _bullets.Remove(bullet);
-        }
-
-        private  void HurtEnemy(EnemyStruct enemy)
-        {
-            enemy.Health--;
         }
 
         private void CreateSplashEffect(BulletStruct bullet)
@@ -444,66 +416,10 @@ namespace MonogameDemoGame
         private void UpdateEnemies()
         {
             foreach (var enemy in _enemies)
-                UpdateEnemy(enemy);
-        }
-
-        private  void UpdateEnemy(EnemyStruct enemy)
-        {
-            enemy.TicksUntilDone--;
-            if (enemy.State == EnemyState.DoingNothing)
             {
-                //do nothing
-
-                if (enemy.TicksUntilDone == 0)
-                    ChangeStateToMoving(enemy);
-            }
-            else if (enemy.State == EnemyState.Moving)
-            {
-                MoveEnemy(enemy);
-
-                if (enemy.TicksUntilDone == 0)
-                    ChangeStateToTurning(enemy);
-            }
-            else if (enemy.State == EnemyState.Turning)
-            {
-                TurnEnemy(enemy);
-
-                if (enemy.TicksUntilDone == 0)
-                    ChangeStateToDoingNothing(enemy);
+                EnemyHelper.Update(enemy, EnemyTicksToDoNothing, EnemyTicksToTurn, EnemyTicksToMove);
             }
         }
-
-        private  void TurnEnemy(EnemyStruct enemy)
-        {
-            enemy.Direction = enemy.Direction.Rotate(1);
-        }
-
-        private  void MoveEnemy(EnemyStruct enemy)
-        {
-            enemy.Position = enemy.Position + enemy.Direction;
-        }
-
-        private  void ChangeStateToDoingNothing(EnemyStruct enemy)
-        {
-            ChangeEnemyState(enemy, EnemyState.DoingNothing, EnemyTicksToDoNothing);
-        }
-
-        private  void ChangeStateToTurning(EnemyStruct enemy)
-        {
-            ChangeEnemyState(enemy, EnemyState.Turning, EnemyTicksToTurn);
-        }
-
-        private  void ChangeStateToMoving(EnemyStruct enemy)
-        {
-            ChangeEnemyState(enemy, EnemyState.Moving, EnemyTicksToMove);
-        }
-
-        private  void ChangeEnemyState(EnemyStruct enemy, EnemyState newState, int ticksUntilDone)
-        {
-            enemy.State = newState;
-            enemy.TicksUntilDone = ticksUntilDone;
-        }
-
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -517,7 +433,7 @@ namespace MonogameDemoGame
             DrawExplosions();
             DrawPlayer();
             DrawBullets(_spriteBatch, _bullets);
-            DrawEnemies();
+            EnemyHelper.DrawEnemies(_spriteBatch, _enemies, _enemyTexture, PlayerSize, HalfPlayerSize);
             DrawSplashes();
             if (_triggerPowerUpText)
             {
@@ -568,14 +484,6 @@ namespace MonogameDemoGame
                     var particlePosition = splash.Position + (splash.Direction * splash.SplashCounter).Rotate(direction);
                     DrawHelper.DrawEntity(_spriteBatch, _collisionSplashTexture, particlePosition);
                 }
-            }
-        }
-
-        private void DrawEnemies()
-        {
-            foreach (var enemy in _enemies)
-            {
-                DrawHelper.DrawEntityWithRotation(_spriteBatch, _enemyTexture, enemy.Position, enemy.Direction, PlayerSize, HalfPlayerSize);
             }
         }
 

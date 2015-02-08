@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Core\BulletHelper.cs" />
     <Compile Include="Core\BulletSplashHelper.cs" />
+    <Compile Include="Core\CameraHelper.cs" />
     <Compile Include="Core\CollisionHelper.cs" />
     <Compile Include="Core\Domain\Bullet.cs" />
     <Compile Include="Core\Domain\Camera.cs" />
@@ -61,7 +62,6 @@
     <Compile Include="Core\PlayerHelper.cs" />
     <Compile Include="Core\PowerUpHelper.cs" />
     <Compile Include="Core\ShrubberyHelper.cs" />
-    <Compile Include="Helpers\CameraHelper.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Helpers\PhysicsHelper.cs" />
     <Compile Include="ProgramController.cs" />

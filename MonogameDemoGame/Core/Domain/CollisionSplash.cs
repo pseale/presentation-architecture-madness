@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace MonogameDemoGame.Structs
+namespace MonogameDemoGame.Core.Domain
 {
     public class CollisionSplash
     {

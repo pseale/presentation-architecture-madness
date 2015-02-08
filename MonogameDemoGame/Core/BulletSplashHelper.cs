@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MonogameDemoGame.Core.Domain;
 using MonogameDemoGame.Helpers;
 using MonogameDemoGame.Services;
 using MonogameDemoGame.Structs;

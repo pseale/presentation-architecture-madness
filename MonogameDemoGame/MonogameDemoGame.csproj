@@ -49,6 +49,7 @@
     <Compile Include="Core\CollisionHelper.cs" />
     <Compile Include="Core\Domain\Bullet.cs" />
     <Compile Include="Core\Domain\Camera.cs" />
+    <Compile Include="Core\Domain\CollisionSplash.cs" />
     <Compile Include="Core\Domain\Enemy.cs" />
     <Compile Include="Core\Domain\EnemyState.cs" />
     <Compile Include="Core\Domain\Explosion.cs" />
@@ -77,7 +78,6 @@
     <Compile Include="Services\InputService.cs" />
     <Compile Include="Services\IRandomNumberService.cs" />
     <Compile Include="Services\RandomNumberService.cs" />
-    <Compile Include="Structs\CollisionSplashStruct.cs" />
     <Compile Include="Structs\InputStruct.cs" />
   </ItemGroup>
   <ItemGroup>

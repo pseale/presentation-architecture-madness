@@ -65,9 +65,6 @@
     <Compile Include="Core\Domain\Spawning\PlayerDto.cs" />
     <Compile Include="Core\Domain\Spawning\ShrubberyDto.cs" />
     <Compile Include="Core\Domain\Spawning\LobGameStarter.cs" />
-    <Compile Include="Core\ExplosionHelper.cs" />
-    <Compile Include="Core\Helpers\BorderHelper.cs" />
-    <Compile Include="Core\PowerUpHelper.cs" />
     <Compile Include="Helpers\MathHelper2.cs" />
     <Compile Include="Helpers\PhysicsHelper.cs" />
     <Compile Include="ProgramController.cs" />

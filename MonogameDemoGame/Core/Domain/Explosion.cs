@@ -18,7 +18,6 @@ namespace MonogameDemoGame.Core.Domain
 
         public Vector2 Position { get; private set; }
         public List<ExplosionFragment> Fragments { get; private set; }
-        public int Ticks { get { return _ticks; } }
 
         public ExplosionUpdateResult Update()
         {

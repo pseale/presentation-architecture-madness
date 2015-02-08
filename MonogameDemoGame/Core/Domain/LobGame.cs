@@ -134,7 +134,11 @@ namespace MonogameDemoGame.Core.Domain
 
         private void CreateExplosion(Enemy enemy)
         {
-            var explosion = ExplosionHelper.Spawn(enemy, FragmentsPerExplosion, CollisionFragmentMaxSpeed);
+            var fragments = new List<Vector2>();
+        
+            for (int i = 0; i < FragmentsPerExplosion; i++)
+                fragments.Add(new Vector2(1, 0).Rotate(RandomNumberService.NextRandomNumber(360)) * RandomNumberService.NextRandomNumber(CollisionFragmentMaxSpeed));
+            var explosion = new Explosion(enemy.Position, fragments);
             _explosions.Add(explosion);
         }
 

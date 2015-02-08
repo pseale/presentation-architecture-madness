@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using MonogameDemoGame.Core.Helpers;
 using MonogameDemoGame.Services;
 
 namespace MonogameDemoGame.Core.Domain.Spawning
@@ -39,7 +38,7 @@ namespace MonogameDemoGame.Core.Domain.Spawning
             var list = new List<ShrubberyDto>();
             for (int i = 0; i < numberOfShrubbery; i++)
             {
-                list.Add(new ShrubberyDto() { Position = BorderHelper.CreatePointInBoundary(gameBorder)});
+                list.Add(new ShrubberyDto() { Position = CreatePointInBoundary(gameBorder)});
             }
 
             return list.ToArray();
@@ -53,7 +52,7 @@ namespace MonogameDemoGame.Core.Domain.Spawning
             {
                 list.Add(new EnemyDto()
                 {
-                    Position = BorderHelper.CreatePointInBoundary(gameBorder).ToVector2(), 
+                    Position = CreatePointInBoundary(gameBorder).ToVector2(), 
                     FacingDirection = GenerateEnemyDirection()
                 });
             }
@@ -72,6 +71,13 @@ namespace MonogameDemoGame.Core.Domain.Spawning
 
             var direction = new Vector2(x, y);
             return direction;
+        }
+
+        private static Point CreatePointInBoundary(int gameBorder)
+        {
+            return new Point(
+                RandomNumberService.NextRandomNumberBetweenPositiveAndNegative(gameBorder),
+                RandomNumberService.NextRandomNumberBetweenPositiveAndNegative(gameBorder));
         }
     }
 }

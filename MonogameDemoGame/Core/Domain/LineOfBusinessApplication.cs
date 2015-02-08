@@ -61,7 +61,7 @@ namespace MonogameDemoGame.Core.Domain
 
         private void InitializeCamera()
         {
-            _camera = CameraHelper.Spawn(Midpoint);
+            _camera = CameraHelper.Spawn(new Point(0, 0));
         }
 
         private void SpawnShrubbery()

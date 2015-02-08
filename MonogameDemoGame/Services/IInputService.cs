@@ -5,7 +5,7 @@ namespace MonogameDemoGame.Services
 {
     public interface IInputService
     {
-        InputStruct ProcessInput(Point midpoint, Point playerPosition, Point cameraPosition);
+        InputStruct ProcessInput(Point playerPosition, Point cameraPosition);
         bool UserIsTryingToExit();
     }
 }

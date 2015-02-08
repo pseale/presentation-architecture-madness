@@ -35,7 +35,7 @@ namespace MonogameDemoGame.Services
             var transform = Matrix.CreateTranslation(new Vector3(-cameraPosition.X, -cameraPosition.Y, 0))*
                             Matrix.CreateRotationZ(0)*
                             Matrix.CreateScale(new Vector3(1, 1, 1))*
-                            Matrix.CreateTranslation(new Vector3(widthMidpoint, heightMidpoint, 0));
+                            Matrix.CreateTranslation(new Vector3(0, 0, 0));
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transform);
         }
 

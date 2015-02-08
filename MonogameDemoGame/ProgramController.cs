@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using MonogameDemoGame.Core;
 using MonogameDemoGame.Core.Domain;
-using MonogameDemoGame.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonogameDemoGame.Services;
-using MonogameDemoGame.Structs;
 
 namespace MonogameDemoGame
 {
@@ -149,14 +146,11 @@ namespace MonogameDemoGame
             if (_inputService.UserIsTryingToExit())
                 Exit();
 
-            var input = _inputService.ProcessInput(Midpoint, _lob.GetPlayerPosition(), _lob.GetCameraPosition());
+            var input = _inputService.ProcessInput(_lob.GetPlayerPosition(), _lob.GetCameraPosition());
 
             _lob.Update(input);
             base.Update(gameTime);
         }
-
-
-
 
         /// <summary>
         /// This is called when the game should draw itself.

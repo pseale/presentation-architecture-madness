@@ -7,13 +7,13 @@ namespace MonogameDemoGame.Services
 {
     public class InputService : IInputService
     {
-        public InputStruct ProcessInput(Point midpoint, Point playerPosition, Point cameraPosition)
+        public InputStruct ProcessInput(Point playerPosition, Point cameraPosition)
         {
             var moveDirection = GetMoveDirection(Keyboard.GetState());
             var mouseState = Mouse.GetState();
 
             bool isFiring = GetFiringStatus(mouseState);
-            var direction = ProcessMouseInput(mouseState, midpoint, playerPosition, cameraPosition);
+            var direction = ProcessMouseInput(mouseState, playerPosition, cameraPosition);
 
             return new InputStruct()
             {
@@ -48,10 +48,10 @@ namespace MonogameDemoGame.Services
             return mouseState.LeftButton == ButtonState.Pressed;
         }
 
-        private Vector2 ProcessMouseInput(MouseState mouseState, Point midpoint, Point playerPosition, Point cameraPosition)
+        private Vector2 ProcessMouseInput(MouseState mouseState, Point playerPosition, Point cameraPosition)
         {
-            
-            var direction = (mouseState.Position - midpoint - playerPosition + cameraPosition).ToVector2();
+
+            var direction = (mouseState.Position + cameraPosition - playerPosition).ToVector2();
             var normalizedDirection = MathHelper.ShrinkVectorTo1Magnitude(direction);
 
             return normalizedDirection;

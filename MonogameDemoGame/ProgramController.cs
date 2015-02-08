@@ -3,12 +3,16 @@ using MonogameDemoGame.Core;
 using MonogameDemoGame.Core.Domain;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonogameDemoGame.Core.Domain.Spawning;
 using MonogameDemoGame.Services;
 
 namespace MonogameDemoGame
 {
     public class ProgramController : Game
     {
+        private const int GameBorder = 2000;
+        private const int NumberOfShrubbery = 500;
+        private const int NumberOfEnemies = 250;
         private const int ScreenWidth = 640;
         private const int ScreenHeight = 480;
         private const int WidthMidpoint = ScreenWidth / 2;
@@ -42,7 +46,7 @@ namespace MonogameDemoGame
         private IInputService _inputService;
         private IDrawService _drawService;
 
-        private LineOfBusinessApplication _lob;
+        private LobGame _lob;
 
         public ProgramController()
         {
@@ -87,7 +91,8 @@ namespace MonogameDemoGame
             _inputService = new InputService();
             _drawService = new DrawService(_spriteBatch, GraphicsDevice);
 
-            _lob = new LineOfBusinessApplication();
+            var gameData = LobGameStarter.CreateInitialGameState(Midpoint, GameBorder, NumberOfShrubbery, NumberOfEnemies);
+            _lob = new LobGame(gameData);
 
             LoadFont();
             LoadTexturesFromFile();

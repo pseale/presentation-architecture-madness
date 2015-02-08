@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using MonogameDemoGame.Services;
 
 namespace MonogameDemoGame.Core.Domain
 {
@@ -14,7 +13,7 @@ namespace MonogameDemoGame.Core.Domain
         public Vector2 Position { get; private set; }
         public Vector2 Direction { get; private set; }
 
-        public bool ShouldBeDeleted(LineOfBusinessApplication lob)
+        public bool ShouldBeDeleted(LobGame lob)
         {
             return lob.OutOfBounds(Position.X)
                    || lob.OutOfBounds(Position.Y);

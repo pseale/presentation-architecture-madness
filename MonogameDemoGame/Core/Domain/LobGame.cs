@@ -2,21 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using MonogameDemoGame.Core.Domain.Spawning;
 using MonogameDemoGame.Helpers;
 using MonogameDemoGame.Services;
 using MonogameDemoGame.Structs;
 
 namespace MonogameDemoGame.Core.Domain
 {
-    public class LineOfBusinessApplication
+    public class LobGame
     {
-        private const int EnemiesToSpawn = 400;
-        private const int NumberOfEnemiesToSpawn = 250;
-        private const int ScreenWidth = 640;
-        private const int ScreenHeight = 480;
-        private const int WidthMidpoint = ScreenWidth / 2;
-        private const int HeightMidpoint = ScreenHeight / 2;
-        private readonly Point Midpoint = new Point(WidthMidpoint, HeightMidpoint);
         private const int PowerUpTicks = 90;
         private const int CollisionFragmentMaxSpeed = 10;
         private const int FragmentsPerExplosion = 36;
@@ -25,7 +19,7 @@ namespace MonogameDemoGame.Core.Domain
         private const int EnemySize = 32;
         private const int PlayerSize = 32;
         private const int HalfPlayerSize = PlayerSize / 2;
-        private const int GameBorder = 2000;
+        private readonly int _gameBorder;
 
         private Camera _camera;
         private Player _player;
@@ -38,36 +32,17 @@ namespace MonogameDemoGame.Core.Domain
         private bool _triggerPowerUpText;
         private int _powerUpCounter;
 
-        public LineOfBusinessApplication()
+        public LobGame(InitialGameState initialGameState)
         {
-            InitializeCamera();
+            _gameBorder = initialGameState.GameBorder;
 
-            SpawnPlayer();
-            SpawnEnemies();
-            SpawnShrubbery();
-        }
+            _camera = new Camera(new Point(initialGameState.Camera.Position.X, initialGameState.Camera.Position.Y));
+            _player = new Player(initialGameState.Player.Position, initialGameState.Player.FacingDirection);
 
-        private void SpawnPlayer()
-        {
-            _player = PlayerHelper.Spawn(Midpoint);
-        }
-
-        private void InitializeCamera()
-        {
-            _camera = CameraHelper.Spawn(new Point(0, 0));
-        }
-
-        private void SpawnShrubbery()
-        {
-            for (int i = 0; i < EnemiesToSpawn; i++)
-            {
-                _shrubbery.Add(ShrubberyHelper.Spawn(CreatePointInBoundary()));
-            }
-        }
-
-        private void SpawnEnemies()
-        {
-            _enemies.AddRange(EnemyHelper.SpawnEnemies(this, NumberOfEnemiesToSpawn));
+            foreach (var enemy in initialGameState.Enemies)
+                _enemies.Add(new Enemy(enemy.Position, enemy.FacingDirection));
+            foreach (var shrubbery in initialGameState.Shrubbery)
+                _shrubbery.Add(new Shrubbery(shrubbery.Position));
         }
 
         public Point GetPlayerPosition()
@@ -234,6 +209,7 @@ namespace MonogameDemoGame.Core.Domain
 
                 list.Add(bullet);
             }
+
             _bullets.AddRange(list);
         }
 
@@ -298,14 +274,7 @@ namespace MonogameDemoGame.Core.Domain
 
         public bool OutOfBounds(float position)
         {
-            return Math.Abs(position) > GameBorder;
-        }
-
-        public Point CreatePointInBoundary()
-        {
-            return new Point(
-                RandomNumberService.NextRandomNumberBetweenPositiveAndNegative(GameBorder),
-                RandomNumberService.NextRandomNumberBetweenPositiveAndNegative(GameBorder));
+            return Math.Abs(position) > _gameBorder;
         }
     }
 }

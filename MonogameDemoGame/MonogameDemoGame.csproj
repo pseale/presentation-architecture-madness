@@ -55,6 +55,7 @@
     <Compile Include="Core\Domain\Explosion.cs" />
     <Compile Include="Core\Domain\ExplosionFragment.cs" />
     <Compile Include="Core\Domain\ExplosionUpdateResult.cs" />
+    <Compile Include="Core\Domain\LineOfBusinessApplication.cs" />
     <Compile Include="Core\Domain\LevelUpResult.cs" />
     <Compile Include="Core\Domain\Player.cs" />
     <Compile Include="Core\Domain\Shrubbery.cs" />

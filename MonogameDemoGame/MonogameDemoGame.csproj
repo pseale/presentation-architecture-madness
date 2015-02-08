@@ -50,6 +50,8 @@
     <Compile Include="Core\Domain\Enemy.cs" />
     <Compile Include="Core\Domain\Explosion.cs" />
     <Compile Include="Core\Domain\ExplosionFragment.cs" />
+    <Compile Include="Core\Domain\LevelUpResult.cs" />
+    <Compile Include="Core\Domain\Player.cs" />
     <Compile Include="Core\Domain\Shrubbery.cs" />
     <Compile Include="Core\EnemyHelper.cs" />
     <Compile Include="Core\ExplosionHelper.cs" />
@@ -77,7 +79,6 @@
     <Compile Include="Structs\ExplosionUpdateResult.cs" />
     <Compile Include="Structs\InputStruct.cs" />
     <Compile Include="Structs\MouseInputStruct.cs" />
-    <Compile Include="Structs\PlayerStruct.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.3.0.1695, Culture=neutral, processorArchitecture=MSIL">

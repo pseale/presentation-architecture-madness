@@ -10,13 +10,13 @@ namespace MonogameDemoGame.Core
 {
     public static class BulletHelper
     {
-        public static IEnumerable<Bullet> Spawn(IRandomNumberService randomNumberService, PlayerStruct player, float bulletSpeed, int halfPlayerSize)
+        public static IEnumerable<Bullet> Spawn(IRandomNumberService randomNumberService, Player player, float bulletSpeed, int halfPlayerSize)
         {
             var list = new List<Bullet>();
 
             var xDelta = player.FacingDirection.X * bulletSpeed;
             var yDelta = player.FacingDirection.Y * bulletSpeed;
-            foreach (var gunAngle in player.GunAngles)
+            foreach (var gunAngle in player.FiringAngles)
             {
                 var angle = (int)randomNumberService.GenerateRandomNumberClusteredTowardZero(gunAngle);
                 if (randomNumberService.GetRandomBool())

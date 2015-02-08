@@ -55,7 +55,7 @@ namespace MonogameDemoGame
 
         private Point _cameraPosition;
 
-        private PlayerStruct _player;
+        private Player _player;
         private List<Bullet> _bullets = new List<Bullet>();
 
         private List<Enemy> _enemies = new List<Enemy>();
@@ -198,7 +198,7 @@ namespace MonogameDemoGame
 
             var input = _inputService.ProcessInput(Midpoint, _player.Position, _cameraPosition);
 
-            PlayerHelper.Update(_player, input);
+            _player.Update(input);
 
             MovePlayer();
             MoveCamera();
@@ -222,7 +222,7 @@ namespace MonogameDemoGame
 
         private void MovePlayer()
         {
-            PlayerHelper.Move(_player);
+            _player.Move();
         }
 
         private void UpdateExplosions()
@@ -238,22 +238,16 @@ namespace MonogameDemoGame
         private void CheckLevel()
         {
             UpdatePowerUpText();
-            if (ShouldLevelUp())
-            {
-                LevelUp();
+            var result = _player.TryLevelUp(_randomNumberService);
+
+            if (result == LevelUpResult.LeveledUp)
                 ShowPowerUpText();
-            }
         }
 
         private void ShowPowerUpText()
         {
             _triggerPowerUpText = true;
             _powerUpCounter = PowerUpTicks;
-        }
-
-        private void LevelUp()
-        {
-            PlayerHelper.LevelUp(_randomNumberService, _player);
         }
 
         private void UpdatePowerUpText()
@@ -266,11 +260,6 @@ namespace MonogameDemoGame
                     _triggerPowerUpText = false;
                 }
             }
-        }
-
-        private bool ShouldLevelUp()
-        {
-            return PlayerHelper.ShouldLevelUp(_player);
         }
 
         private void UpdateSplashes()
@@ -309,7 +298,7 @@ namespace MonogameDemoGame
 
         private void AwardPlayerExperience()
         {
-            PlayerHelper.AwardExperience(_player);
+            _player.AwardExperience();
         }
 
         private void DetectCollisions()

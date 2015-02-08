@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MathHelper = MonogameDemoGame.Helpers.MathHelper;
+using MonogameDemoGame.Helpers;
 
 namespace MonogameDemoGame.Services
 {
@@ -19,7 +19,7 @@ namespace MonogameDemoGame.Services
         public void DrawEntityWithRotation(Texture2D texture, Vector2 position, Vector2 direction, int playerSize, int halfPlayerSize)
         {
             _spriteBatch.Draw(texture, position, new Rectangle(0, 0, playerSize, playerSize),
-                new Color(Color.White, 1f), MathHelper.ConvertToAngleInRadians(direction), new Vector2(halfPlayerSize, halfPlayerSize), 1.0f, SpriteEffects.None, 1);
+                new Color(Color.White, 1f), MathHelper2.ConvertToAngleInRadians(direction), new Vector2(halfPlayerSize, halfPlayerSize), 1.0f, SpriteEffects.None, 1);
         }
 
         public void DrawEntity(Texture2D texture, Vector2 position)

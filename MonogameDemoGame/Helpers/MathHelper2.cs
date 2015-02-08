@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace MonogameDemoGame.Helpers
 {
-    public static class MathHelper
+    public static class MathHelper2 //renamed so we don't conflict with the real MathHelper
     {
         public static Vector2 ShrinkVectorTo1Magnitude(Vector2 vector)
         {

@@ -64,7 +64,7 @@
     <Compile Include="Core\PlayerHelper.cs" />
     <Compile Include="Core\PowerUpHelper.cs" />
     <Compile Include="Core\ShrubberyHelper.cs" />
-    <Compile Include="Helpers\MathHelper.cs" />
+    <Compile Include="Helpers\MathHelper2.cs" />
     <Compile Include="Helpers\PhysicsHelper.cs" />
     <Compile Include="ProgramController.cs" />
     <Compile Include="Program.cs" />

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MonogameDemoGame.Helpers;
 using MonogameDemoGame.Services;
 using MonogameDemoGame.Structs;
 
@@ -27,11 +28,15 @@ namespace MonogameDemoGame.Core.Domain
         public List<int> FiringAngles { get; private set; }
         public bool IsFiring { get; private set; }
 
-        public void Update(InputStruct input)
+        public void Update(Camera camera, InputStruct input)
         {
+            var direction = (input.MousePosition + camera.Position - Position).ToVector2();
+            var normalizedDirection = MathHelper2.ShrinkVectorTo1Magnitude(direction);
+
             MoveDirection = input.MoveDirection;
             IsFiring = input.IsFiring;
-            FacingDirection = input.PlayerFacingDirection;
+
+            FacingDirection = normalizedDirection;
         }
 
         public void Move()

@@ -89,7 +89,8 @@ namespace MonogameDemoGame.Core.Domain
 
         public void Update(InputStruct input)
         {
-            _player.Update(input);
+
+            _player.Update(_camera, input);
 
             MovePlayer();
             MoveCamera();

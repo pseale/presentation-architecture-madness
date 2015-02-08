@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MonogameDemoGame.Helpers;
 using MonogameDemoGame.Structs;
-using MathHelper = MonogameDemoGame.Helpers.MathHelper;
 
 namespace MonogameDemoGame.Services
 {
@@ -13,13 +13,12 @@ namespace MonogameDemoGame.Services
             var mouseState = Mouse.GetState();
 
             bool isFiring = GetFiringStatus(mouseState);
-            var direction = ProcessMouseInput(mouseState, playerPosition, cameraPosition);
 
             return new InputStruct()
             {
                 IsFiring = isFiring,
                 MoveDirection = moveDirection,
-                PlayerFacingDirection = direction
+                MousePosition = mouseState.Position
             };
         }
 
@@ -52,7 +51,7 @@ namespace MonogameDemoGame.Services
         {
 
             var direction = (mouseState.Position + cameraPosition - playerPosition).ToVector2();
-            var normalizedDirection = MathHelper.ShrinkVectorTo1Magnitude(direction);
+            var normalizedDirection = MathHelper2.ShrinkVectorTo1Magnitude(direction);
 
             return normalizedDirection;
         }

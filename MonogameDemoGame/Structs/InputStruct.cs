@@ -6,6 +6,6 @@ namespace MonogameDemoGame.Structs
     {
         public Point MoveDirection { get; set; }
         public bool IsFiring { get; set; }
-        public Vector2 PlayerFacingDirection { get; set; }
+        public Point MousePosition { get; set; }
     }
 }

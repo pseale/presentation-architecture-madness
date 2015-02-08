@@ -40,7 +40,6 @@ namespace MonogameDemoGame
         private SpriteFont _font;
 
         
-        private IBoundaryService _boundaryService;
         private IContentService _contentService;
         private IInputService _inputService;
         private IDrawService _drawService;
@@ -87,12 +86,11 @@ namespace MonogameDemoGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _randomNumberService = new RandomNumberService();
-            _boundaryService = new BoundaryService(new RandomNumberService());
             _contentService = new ContentService(GraphicsDevice, Content);
             _inputService = new InputService();
             _drawService = new DrawService(_spriteBatch, GraphicsDevice);
 
-            _lob = new LineOfBusinessApplication(_boundaryService, _randomNumberService);
+            _lob = new LineOfBusinessApplication(_randomNumberService);
 
             LoadFont();
             LoadTexturesFromFile();

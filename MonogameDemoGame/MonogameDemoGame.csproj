@@ -69,10 +69,8 @@
     <Compile Include="ProgramController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\BoundaryService.cs" />
     <Compile Include="Services\ContentService.cs" />
     <Compile Include="Services\DrawService.cs" />
-    <Compile Include="Services\IBoundaryService.cs" />
     <Compile Include="Services\IContentService.cs" />
     <Compile Include="Services\IDrawService.cs" />
     <Compile Include="Services\IInputService.cs" />

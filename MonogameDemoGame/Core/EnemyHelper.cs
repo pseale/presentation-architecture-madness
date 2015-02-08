@@ -9,13 +9,13 @@ namespace MonogameDemoGame.Core
 {
     public static class EnemyHelper
     {
-        public static IEnumerable<Enemy> SpawnEnemies(IBoundaryService boundaryService, int randomSeedForEnemies, int numberOfEnemiesToSpawn)
+        public static IEnumerable<Enemy> SpawnEnemies(LineOfBusinessApplication lob, int randomSeedForEnemies, int numberOfEnemiesToSpawn)
         {
             var list = new List<Enemy>();
             var randomNumberService = new RandomNumberService(randomSeedForEnemies);
             foreach (var i in Enumerable.Range(1, numberOfEnemiesToSpawn))
             {
-                list.Add(new Enemy(boundaryService.CreatePointInBoundary().ToVector2(),
+                list.Add(new Enemy(lob.CreatePointInBoundary().ToVector2(),
                     GenerateEnemyDirection(randomNumberService)));
             }
             return list;

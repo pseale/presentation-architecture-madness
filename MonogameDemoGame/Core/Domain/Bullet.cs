@@ -14,10 +14,10 @@ namespace MonogameDemoGame.Core.Domain
         public Vector2 Position { get; private set; }
         public Vector2 Direction { get; private set; }
 
-        public bool ShouldBeDeleted(IBoundaryService boundaryService)
+        public bool ShouldBeDeleted(LineOfBusinessApplication lob)
         {
-            return boundaryService.OutOfBounds(Position.X)
-                   || boundaryService.OutOfBounds(Position.Y);
+            return lob.OutOfBounds(Position.X)
+                   || lob.OutOfBounds(Position.Y);
         }
 
         public void Move()

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -10,7 +10,6 @@ namespace MonogameDemoGame.Core.Domain
 {
     public class LineOfBusinessApplication
     {
-        private readonly IBoundaryService _boundaryService;
         private readonly IRandomNumberService _randomNumberService;
         private const int EnemiesToSpawn = 400;
         private const int NumberOfEnemiesToSpawn = 250;
@@ -19,7 +18,6 @@ namespace MonogameDemoGame.Core.Domain
         private const int WidthMidpoint = ScreenWidth / 2;
         private const int HeightMidpoint = ScreenHeight / 2;
         private readonly Point Midpoint = new Point(WidthMidpoint, HeightMidpoint);
-        private const int RandomSeedForShrubbery = 200;
         private const int RandomSeedForEnemies = 100;
         private const int PowerUpTicks = 90;
         private const int CollisionFragmentMaxSpeed = 10;
@@ -29,6 +27,7 @@ namespace MonogameDemoGame.Core.Domain
         private const int EnemySize = 32;
         private const int PlayerSize = 32;
         private const int HalfPlayerSize = PlayerSize / 2;
+        private const int GameBorder = 2000;
 
         private Camera _camera;
         private Player _player;
@@ -41,10 +40,9 @@ namespace MonogameDemoGame.Core.Domain
         private bool _triggerPowerUpText;
         private int _powerUpCounter;
 
-        public LineOfBusinessApplication(IBoundaryService boundaryService, IRandomNumberService randomNumberService)
+        public LineOfBusinessApplication(IRandomNumberService randomNumberService)
         {
             //these services should not be here
-            _boundaryService = boundaryService;
             _randomNumberService = randomNumberService;
 
             InitializeCamera();
@@ -68,13 +66,13 @@ namespace MonogameDemoGame.Core.Domain
         {
             for (int i = 0; i < EnemiesToSpawn; i++)
             {
-                _shrubbery.Add(ShrubberyHelper.Spawn(_boundaryService));
+                _shrubbery.Add(ShrubberyHelper.Spawn(CreatePointInBoundary()));
             }
         }
 
         private void SpawnEnemies()
         {
-            _enemies.AddRange(EnemyHelper.SpawnEnemies(_boundaryService, RandomSeedForEnemies, NumberOfEnemiesToSpawn));
+            _enemies.AddRange(EnemyHelper.SpawnEnemies(this, RandomSeedForEnemies, NumberOfEnemiesToSpawn));
         }
 
         public Point GetPlayerPosition()
@@ -217,7 +215,7 @@ namespace MonogameDemoGame.Core.Domain
         private void DeleteBullets()
         {
             var bulletsToDelete = _bullets
-                .Where(x => x.ShouldBeDeleted(_boundaryService))
+                .Where(x => x.ShouldBeDeleted(this))
                 .ToArray();
             foreach (var bulletToDelte in bulletsToDelete)
                 _bullets.Remove(bulletToDelte);
@@ -284,6 +282,18 @@ namespace MonogameDemoGame.Core.Domain
         public IEnumerable<CollisionSplash> GetCollisionSplashes()
         {
             return _collisionSplashes;
+        }
+
+        public bool OutOfBounds(float position)
+        {
+            return Math.Abs(position) > GameBorder;
+        }
+
+        public Point CreatePointInBoundary()
+        {
+            return new Point(
+                _randomNumberService.NextRandomNumberBetweenPositiveAndNegative(GameBorder),
+                _randomNumberService.NextRandomNumberBetweenPositiveAndNegative(GameBorder));
         }
     }
 }

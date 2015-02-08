@@ -65,7 +65,7 @@ namespace MonogameDemoGame
         private bool _triggerPowerUpText;
         private int _powerUpCounter;
         
-        private List<Point> _shrubbery = new List<Point>();
+        private List<Shrubbery> _shrubbery = new List<Shrubbery>();
         
         private List<ExplosionStruct> _explosions = new List<ExplosionStruct>();
         private IBoundaryService _boundaryService;
@@ -409,7 +409,7 @@ namespace MonogameDemoGame
         private void DrawShrubbery()
         {
             foreach (var shrub in _shrubbery)
-                _drawService.DrawEntity(_shrubberyTexture, shrub.ToVector2());
+                _drawService.DrawEntity(_shrubberyTexture, shrub.Position.ToVector2());
         }
 
         private void DrawPowerUpText()

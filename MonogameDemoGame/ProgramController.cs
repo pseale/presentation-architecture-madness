@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MonogameDemoGame.Core;
+using MonogameDemoGame.Core.Domain;
 using MonogameDemoGame.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -61,7 +62,7 @@ namespace MonogameDemoGame
         private Point _cameraPosition;
 
         private PlayerStruct _player;
-        private List<BulletStruct> _bullets = new List<BulletStruct>();
+        private List<Bullet> _bullets = new List<Bullet>();
 
         private List<EnemyStruct> _enemies = new List<EnemyStruct>();
         private List<CollisionSplashStruct> _collisionSplashes = new List<CollisionSplashStruct>();
@@ -325,19 +326,19 @@ namespace MonogameDemoGame
                         Collide(bullet, enemy);
         }
 
-        private void Collide(BulletStruct bullet, EnemyStruct enemy)
+        private void Collide(Bullet bullet, EnemyStruct enemy)
         {
             DestroyBullet(bullet);
             EnemyHelper.HurtEnemy(enemy);
             CreateSplashEffect(bullet);
         }
 
-        private void DestroyBullet(BulletStruct bullet)
+        private void DestroyBullet(Bullet bullet)
         {
             _bullets.Remove(bullet);
         }
 
-        private void CreateSplashEffect(BulletStruct bullet)
+        private void CreateSplashEffect(Bullet bullet)
         {
             _collisionSplashes.Add(CollisionHelper.Spawn(bullet));
         }
@@ -353,13 +354,13 @@ namespace MonogameDemoGame
 
         private void MoveBullets()
         {
-            _bullets.ForEach(p => BulletHelper.Move(p));
+            _bullets.ForEach(p => p.Move());
         }
 
         private void DeleteBullets()
         {
             var bulletsToDelete = _bullets
-                .Where(x => BulletHelper.ShouldBeDeleted(_boundaryService, x))
+                .Where(x => x.ShouldBeDeleted(_boundaryService))
                 .ToArray();
             foreach (var bulletToDelte in bulletsToDelete)
                 _bullets.Remove(bulletToDelte);
@@ -429,7 +430,7 @@ namespace MonogameDemoGame
                 _drawService.DrawEntity(_collisionSplashTexture, item);
         }
 
-        private void DrawBullets(IEnumerable<BulletStruct> bullets)
+        private void DrawBullets(IEnumerable<Bullet> bullets)
         {
             foreach (var bullet in bullets) 
                 _drawService.DrawEntity(_bulletTexture, new Vector2(bullet.Position.X - BulletSize/2, bullet.Position.Y - BulletSize/2));

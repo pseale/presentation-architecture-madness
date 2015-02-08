@@ -46,6 +46,7 @@
     <Compile Include="Core\BulletHelper.cs" />
     <Compile Include="Core\BulletSplashHelper.cs" />
     <Compile Include="Core\CollisionHelper.cs" />
+    <Compile Include="Core\Domain\Bullet.cs" />
     <Compile Include="Core\EnemyHelper.cs" />
     <Compile Include="Core\ExplosionHelper.cs" />
     <Compile Include="Core\PlayerHelper.cs" />
@@ -67,7 +68,6 @@
     <Compile Include="Services\InputService.cs" />
     <Compile Include="Services\IRandomNumberService.cs" />
     <Compile Include="Services\RandomNumberService.cs" />
-    <Compile Include="Structs\BulletStruct.cs" />
     <Compile Include="Structs\CollisionSplashStruct.cs" />
     <Compile Include="Structs\EnemyState.cs" />
     <Compile Include="Structs\EnemyStruct.cs" />

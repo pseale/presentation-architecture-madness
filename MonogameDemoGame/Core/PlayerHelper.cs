@@ -21,11 +21,11 @@ namespace MonogameDemoGame.Core
             return player;
         }
 
-        public static void Update(PlayerStruct player, KeyboardInputStruct keyboardInput, MouseInputStruct mouseInput)
+        public static void Update(PlayerStruct player, InputStruct input)
         {
-            player.MoveDirection = keyboardInput.MoveDirection;
-            player.IsFiring = mouseInput.IsFiring;
-            player.FacingDirection = mouseInput.PlayerFacingDirection;
+            player.MoveDirection = input.MoveDirection;
+            player.IsFiring = input.IsFiring;
+            player.FacingDirection = input.PlayerFacingDirection;
         }
 
         public static void Move(PlayerStruct player)

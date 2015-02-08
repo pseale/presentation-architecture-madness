@@ -53,7 +53,6 @@
     <Compile Include="Core\ShrubberyHelper.cs" />
     <Compile Include="Helpers\CameraHelper.cs" />
     <Compile Include="Helpers\DrawHelper.cs" />
-    <Compile Include="Helpers\InputHelper.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Helpers\PhysicsHelper.cs" />
     <Compile Include="ProgramController.cs" />
@@ -63,6 +62,8 @@
     <Compile Include="Services\ContentService.cs" />
     <Compile Include="Services\IBoundaryService.cs" />
     <Compile Include="Services\IContentService.cs" />
+    <Compile Include="Services\IInputService.cs" />
+    <Compile Include="Services\InputService.cs" />
     <Compile Include="Services\IRandomNumberService.cs" />
     <Compile Include="Services\RandomNumberService.cs" />
     <Compile Include="Structs\BulletStruct.cs" />
@@ -71,7 +72,7 @@
     <Compile Include="Structs\EnemyStruct.cs" />
     <Compile Include="Structs\ExplosionStruct.cs" />
     <Compile Include="Structs\ExplosionUpdateResult.cs" />
-    <Compile Include="Structs\KeyboardInputStruct.cs" />
+    <Compile Include="Structs\InputStruct.cs" />
     <Compile Include="Structs\MouseInputStruct.cs" />
     <Compile Include="Structs\PlayerStruct.cs" />
   </ItemGroup>

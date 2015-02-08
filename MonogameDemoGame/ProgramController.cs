@@ -73,7 +73,8 @@ namespace MonogameDemoGame
         
         private List<ExplosionStruct> _explosions = new List<ExplosionStruct>();
         private IBoundaryService _boundaryService;
-        private ContentService _contentService;
+        private IContentService _contentService;
+        private IInputService _inputService;
 
         public ProgramController()
         {
@@ -139,7 +140,7 @@ namespace MonogameDemoGame
             _randomNumberService = new RandomNumberService();
             _boundaryService = new BoundaryService(new RandomNumberService());
             _contentService = new ContentService(GraphicsDevice, Content);
-
+            _inputService = new InputService();
             InitializeCamera();
 
             SpawnPlayer();
@@ -195,13 +196,12 @@ namespace MonogameDemoGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (InputHelper.UserIsTryingToExit())
+            if (_inputService.UserIsTryingToExit())
                 Exit();
 
-            var keyboardInput = InputHelper.ProcessKeyboardInput();
-            var mouseInput = InputHelper.ProcessMouseInput(Midpoint, _player.Position, _cameraPosition);
+            var input = _inputService.ProcessInput(Midpoint, _player.Position, _cameraPosition);
 
-            PlayerHelper.Update(_player, keyboardInput, mouseInput);
+            PlayerHelper.Update(_player, input);
 
             MovePlayer();
             MoveCamera();

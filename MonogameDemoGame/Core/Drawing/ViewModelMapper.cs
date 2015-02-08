@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using MonogameDemoGame.Core.Domain;
 
-namespace MonogameDemoGame.Core.Domain.Drawing
+namespace MonogameDemoGame.Core.Drawing
 {
     public static class ViewModelMapper
     {

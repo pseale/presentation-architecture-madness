@@ -2,8 +2,8 @@
 using MonogameDemoGame.Core.Domain;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonogameDemoGame.Core.Domain.Drawing;
 using MonogameDemoGame.Core.Domain.Spawning;
+using MonogameDemoGame.Core.Drawing;
 using MonogameDemoGame.Services;
 
 namespace MonogameDemoGame

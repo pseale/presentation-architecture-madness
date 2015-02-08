@@ -46,10 +46,6 @@
     <Compile Include="Core\Domain\Bullet.cs" />
     <Compile Include="Core\Domain\Camera.cs" />
     <Compile Include="Core\Domain\CollisionSplash.cs" />
-    <Compile Include="Core\Domain\Drawing\EntityViewModel.cs" />
-    <Compile Include="Core\Domain\Drawing\GameViewModel.cs" />
-    <Compile Include="Core\Domain\Drawing\TextViewModel.cs" />
-    <Compile Include="Core\Domain\Drawing\ViewModelMapper.cs" />
     <Compile Include="Core\Domain\Enemy.cs" />
     <Compile Include="Core\Domain\EnemyState.cs" />
     <Compile Include="Core\Domain\Explosion.cs" />
@@ -65,6 +61,10 @@
     <Compile Include="Core\Domain\Spawning\PlayerDto.cs" />
     <Compile Include="Core\Domain\Spawning\ShrubberyDto.cs" />
     <Compile Include="Core\Domain\Spawning\LobGameStarter.cs" />
+    <Compile Include="Core\Drawing\EntityViewModel.cs" />
+    <Compile Include="Core\Drawing\GameViewModel.cs" />
+    <Compile Include="Core\Drawing\TextViewModel.cs" />
+    <Compile Include="Core\Drawing\ViewModelMapper.cs" />
     <Compile Include="Helpers\MathHelper2.cs" />
     <Compile Include="Helpers\PhysicsHelper.cs" />
     <Compile Include="ProgramController.cs" />

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace MonogameDemoGame.Core.Domain.Drawing
+namespace MonogameDemoGame.Core.Drawing
 {
     public class TextViewModel
     {

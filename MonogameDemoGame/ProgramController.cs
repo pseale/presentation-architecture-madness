@@ -23,8 +23,6 @@ namespace MonogameDemoGame
         private const int RandomSeedForShrubbery = 200;
         private const int RandomSeedForEnemies = 100;
         private const int NumberOfEnemiesToSpawn = 250;
-        private const int TicksToWaitAtBeginning = 600;
-        private const int EnemyHealth = 100;
         private const int BulletSize = 4;
         private const int EnemySize = 32;
         private const int CollisionSplashSize = 3;
@@ -37,9 +35,6 @@ namespace MonogameDemoGame
         private const float BulletSpeed = 10f;
         private const int PlayerSize = 32;
         private const int HalfPlayerSize = PlayerSize / 2;
-        private const int EnemyTicksToDoNothing = 60;
-        private const int EnemyTicksToTurn = 90;
-        private const int EnemyTicksToMove = 240;
         private const string PowerUpText = "POWER UP";
         private const int NumberOfCollisionSplashParticlesToCreate = 3;
         private const int MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees = 12;
@@ -64,7 +59,7 @@ namespace MonogameDemoGame
         private PlayerStruct _player;
         private List<Bullet> _bullets = new List<Bullet>();
 
-        private List<EnemyStruct> _enemies = new List<EnemyStruct>();
+        private List<Enemy> _enemies = new List<Enemy>();
         private List<CollisionSplashStruct> _collisionSplashes = new List<CollisionSplashStruct>();
 
         private bool _triggerPowerUpText;
@@ -114,7 +109,7 @@ namespace MonogameDemoGame
 
         private void SpawnEnemies()
         {
-            _enemies.AddRange(EnemyHelper.SpawnEnemies(_boundaryService, RandomSeedForEnemies, NumberOfEnemiesToSpawn, TicksToWaitAtBeginning, EnemyHealth));
+            _enemies.AddRange(EnemyHelper.SpawnEnemies(_boundaryService, RandomSeedForEnemies, NumberOfEnemiesToSpawn));
         }
 
         /// <summary>
@@ -289,11 +284,11 @@ namespace MonogameDemoGame
             }
         }
 
-        private void KillEnemies(List<EnemyStruct> enemies)
+        private void KillEnemies(List<Enemy> enemies)
         {
             foreach (var enemy in enemies.ToArray())
             {
-                if (EnemyHelper.HasNoHealth(enemy))
+                if (enemy.HasNoHealth())
                 {
                     KillEnemy(enemy);
                     CreateExplosion(enemy);
@@ -302,12 +297,12 @@ namespace MonogameDemoGame
             }
         }
 
-        private void KillEnemy(EnemyStruct enemy)
+        private void KillEnemy(Enemy enemy)
         {
             _enemies.Remove(enemy);
         }
 
-        private void CreateExplosion(EnemyStruct enemy)
+        private void CreateExplosion(Enemy enemy)
         {
             var explosion = ExplosionHelper.Spawn(_randomNumberService, enemy, FragmentsPerExplosion, CollisionFragmentMaxSpeed);
             _explosions.Add(explosion);
@@ -326,10 +321,10 @@ namespace MonogameDemoGame
                         Collide(bullet, enemy);
         }
 
-        private void Collide(Bullet bullet, EnemyStruct enemy)
+        private void Collide(Bullet bullet, Enemy enemy)
         {
             DestroyBullet(bullet);
-            EnemyHelper.HurtEnemy(enemy);
+            enemy.Hurt();
             CreateSplashEffect(bullet);
         }
 
@@ -374,9 +369,7 @@ namespace MonogameDemoGame
         private void UpdateEnemies()
         {
             foreach (var enemy in _enemies)
-            {
-                EnemyHelper.Update(enemy, EnemyTicksToDoNothing, EnemyTicksToTurn, EnemyTicksToMove);
-            }
+                enemy.Update();
         }
 
         /// <summary>

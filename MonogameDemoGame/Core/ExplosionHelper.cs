@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MonogameDemoGame.Core.Domain;
 using MonogameDemoGame.Helpers;
 using MonogameDemoGame.Services;
 using MonogameDemoGame.Structs;
@@ -19,7 +20,7 @@ namespace MonogameDemoGame.Core
             return ExplosionUpdateResult.DoNothing;
         }
 
-        public static ExplosionStruct Spawn(IRandomNumberService randomNumberService, EnemyStruct enemy, int fragmentsPerExplosion, int collisionFragmentMaxSpeed)
+        public static ExplosionStruct Spawn(IRandomNumberService randomNumberService, Enemy enemy, int fragmentsPerExplosion, int collisionFragmentMaxSpeed)
         {
             var explosionStruct = new ExplosionStruct() { Position = enemy.Position, Ticks = 0 };
             explosionStruct.Fragments = new List<Vector2>();

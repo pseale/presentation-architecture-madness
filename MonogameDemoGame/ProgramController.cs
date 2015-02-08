@@ -21,10 +21,6 @@ namespace MonogameDemoGame
         private const int BulletSize = 4;
         private const int CollisionSplashSize = 3;
         private const int ExplosionFragmentSize = 8;
-        private const int PlayerSize = 32;
-        private const int HalfPlayerSize = PlayerSize / 2;
-        private const int NumberOfCollisionSplashParticlesToCreate = 3;
-        private const int MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees = 12;
         private readonly Color BackgroundColor = Color.White;
         private Dictionary<EntityType, Texture2D> _entityTextures = new Dictionary<EntityType, Texture2D>();
         GraphicsDeviceManager _graphics;

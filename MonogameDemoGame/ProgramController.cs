@@ -75,6 +75,7 @@ namespace MonogameDemoGame
         private IBoundaryService _boundaryService;
         private IContentService _contentService;
         private IInputService _inputService;
+        private IDrawService _drawService;
 
         public ProgramController()
         {
@@ -141,6 +142,7 @@ namespace MonogameDemoGame
             _boundaryService = new BoundaryService(new RandomNumberService());
             _contentService = new ContentService(GraphicsDevice, Content);
             _inputService = new InputService();
+            _drawService = new DrawService(_spriteBatch, GraphicsDevice);
             InitializeCamera();
 
             SpawnPlayer();
@@ -382,38 +384,38 @@ namespace MonogameDemoGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            DrawHelper.InitializeFrame(_spriteBatch, GraphicsDevice, _cameraPosition, WidthMidpoint, HeightMidpoint, BackgroundColor);
+            _drawService.InitializeFrame(_cameraPosition, WidthMidpoint, HeightMidpoint, BackgroundColor);
 
             DrawShrubbery();
             DrawExplosions();
             DrawPlayer();
-            DrawBullets(_spriteBatch, _bullets);
-            EnemyHelper.DrawEnemies(_spriteBatch, _enemies, _enemyTexture, PlayerSize, HalfPlayerSize);
+            DrawBullets(_bullets);
+            EnemyHelper.DrawEnemies(_drawService, _enemies, _enemyTexture, PlayerSize, HalfPlayerSize);
             DrawSplashes();
             if (_triggerPowerUpText)
             {
                 DrawPowerUpText();
             }
 
-            DrawHelper.EndFrame(_spriteBatch, () => base.Draw(gameTime));
+            _drawService.EndFrame(() => base.Draw(gameTime));
         }
 
         private void DrawPlayer()
         {
-            DrawHelper.DrawEntityWithRotation(_spriteBatch, _texture, _player.Position.ToVector2(), _player.FacingDirection, PlayerSize, HalfPlayerSize);
+            _drawService.DrawEntityWithRotation(_texture, _player.Position.ToVector2(), _player.FacingDirection, PlayerSize, HalfPlayerSize);
         }
 
         private void DrawExplosions()
         {
             foreach (var explosion in _explosions)
                 foreach (var fragment in explosion.Fragments)
-                    DrawHelper.DrawEntity(_spriteBatch, _explosionTexture, explosion.Position + fragment * explosion.Ticks);
+                    _drawService.DrawEntity(_explosionTexture, explosion.Position + fragment * explosion.Ticks);
         }
 
         private void DrawShrubbery()
         {
             foreach (var shrub in _shrubbery)
-                DrawHelper.DrawEntity(_spriteBatch, _shrubberyTexture, shrub.ToVector2());
+                _drawService.DrawEntity(_shrubberyTexture, shrub.ToVector2());
         }
 
         private void DrawPowerUpText()
@@ -424,13 +426,13 @@ namespace MonogameDemoGame
         private void DrawSplashes()
         {
             foreach (var item in BulletSplashHelper.Spawn(_randomNumberService, _collisionSplashes, NumberOfCollisionSplashParticlesToCreate, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees))
-                DrawHelper.DrawEntity(_spriteBatch, _collisionSplashTexture, item);
+                _drawService.DrawEntity(_collisionSplashTexture, item);
         }
 
-        private void DrawBullets(SpriteBatch spriteBatch, IEnumerable<BulletStruct> bullets)
+        private void DrawBullets(IEnumerable<BulletStruct> bullets)
         {
             foreach (var bullet in bullets) 
-                DrawHelper.DrawEntity(spriteBatch, _bulletTexture, new Vector2(bullet.Position.X - BulletSize/2, bullet.Position.Y - BulletSize/2));
+                _drawService.DrawEntity(_bulletTexture, new Vector2(bullet.Position.X - BulletSize/2, bullet.Position.Y - BulletSize/2));
         }
     }
 }

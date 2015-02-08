@@ -52,7 +52,6 @@
     <Compile Include="Core\PowerUpHelper.cs" />
     <Compile Include="Core\ShrubberyHelper.cs" />
     <Compile Include="Helpers\CameraHelper.cs" />
-    <Compile Include="Helpers\DrawHelper.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Helpers\PhysicsHelper.cs" />
     <Compile Include="ProgramController.cs" />
@@ -60,8 +59,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BoundaryService.cs" />
     <Compile Include="Services\ContentService.cs" />
+    <Compile Include="Services\DrawService.cs" />
     <Compile Include="Services\IBoundaryService.cs" />
     <Compile Include="Services\IContentService.cs" />
+    <Compile Include="Services\IDrawService.cs" />
     <Compile Include="Services\IInputService.cs" />
     <Compile Include="Services\InputService.cs" />
     <Compile Include="Services\IRandomNumberService.cs" />

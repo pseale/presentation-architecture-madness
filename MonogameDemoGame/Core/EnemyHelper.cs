@@ -42,11 +42,11 @@ namespace MonogameDemoGame.Core
             return direction;
         }
 
-        public static void DrawEnemies(SpriteBatch spriteBatch, IEnumerable<EnemyStruct> enemies, Texture2D enemyTexture, int playerSize, int halfPlayerSize)
+        public static void DrawEnemies(IDrawService drawService, IEnumerable<EnemyStruct> enemies, Texture2D enemyTexture, int playerSize, int halfPlayerSize)
         {
             foreach (var enemy in enemies)
             {
-                DrawHelper.DrawEntityWithRotation(spriteBatch, enemyTexture, enemy.Position, enemy.Direction, playerSize, halfPlayerSize);
+                drawService.DrawEntityWithRotation(enemyTexture, enemy.Position, enemy.Direction, playerSize, halfPlayerSize);
             }
         }
 

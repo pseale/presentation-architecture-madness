@@ -1,16 +1,14 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonogameDemoGame.Core.Domain;
 using MonogameDemoGame.Helpers;
 using MonogameDemoGame.Services;
-using MonogameDemoGame.Structs;
 
 namespace MonogameDemoGame.Core
 {
     public static class BulletHelper
     {
-        public static IEnumerable<Bullet> Spawn(IRandomNumberService randomNumberService, Player player, float bulletSpeed, int halfPlayerSize)
+        public static IEnumerable<Bullet> Spawn(Player player, float bulletSpeed, int halfPlayerSize)
         {
             var list = new List<Bullet>();
 
@@ -18,8 +16,8 @@ namespace MonogameDemoGame.Core
             var yDelta = player.FacingDirection.Y * bulletSpeed;
             foreach (var gunAngle in player.FiringAngles)
             {
-                var angle = (int)randomNumberService.GenerateRandomNumberClusteredTowardZero(gunAngle);
-                if (randomNumberService.GetRandomBool())
+                var angle = (int)RandomNumberService.GenerateRandomNumberClusteredTowardZero(gunAngle);
+                if (RandomNumberService.GetRandomBool())
                     angle = -angle;
 
                 var direction = new Vector2(xDelta, yDelta).Rotate(angle);

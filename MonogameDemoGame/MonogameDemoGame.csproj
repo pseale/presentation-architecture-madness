@@ -75,7 +75,6 @@
     <Compile Include="Services\IDrawService.cs" />
     <Compile Include="Services\IInputService.cs" />
     <Compile Include="Services\InputService.cs" />
-    <Compile Include="Services\IRandomNumberService.cs" />
     <Compile Include="Services\RandomNumberService.cs" />
     <Compile Include="Structs\InputStruct.cs" />
   </ItemGroup>

@@ -8,12 +8,12 @@ namespace MonogameDemoGame.Core
 {
     public static class ExplosionHelper
     {
-        public static Explosion Spawn(IRandomNumberService randomNumberService, Enemy enemy, int fragmentsPerExplosion, int collisionFragmentMaxSpeed)
+        public static Explosion Spawn(Enemy enemy, int fragmentsPerExplosion, int collisionFragmentMaxSpeed)
         {
             var fragments = new List<Vector2>();
         
             for (int i = 0; i < fragmentsPerExplosion; i++)
-                fragments.Add(new Vector2(1, 0).Rotate(randomNumberService.NextRandomNumber(360)) * randomNumberService.NextRandomNumber(collisionFragmentMaxSpeed));
+                fragments.Add(new Vector2(1, 0).Rotate(RandomNumberService.NextRandomNumber(360)) * RandomNumberService.NextRandomNumber(collisionFragmentMaxSpeed));
 
             return new Explosion(enemy.Position, fragments);
         }

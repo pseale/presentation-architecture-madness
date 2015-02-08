@@ -29,8 +29,6 @@ namespace MonogameDemoGame
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
-        private IRandomNumberService _randomNumberService;
-
         private Texture2D _texture;
         private Texture2D _bulletTexture;
         private Texture2D _enemyTexture;
@@ -85,12 +83,11 @@ namespace MonogameDemoGame
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _randomNumberService = new RandomNumberService();
             _contentService = new ContentService(GraphicsDevice, Content);
             _inputService = new InputService();
             _drawService = new DrawService(_spriteBatch, GraphicsDevice);
 
-            _lob = new LineOfBusinessApplication(_randomNumberService);
+            _lob = new LineOfBusinessApplication();
 
             LoadFont();
             LoadTexturesFromFile();
@@ -197,7 +194,7 @@ namespace MonogameDemoGame
 
         private void DrawSplashes()
         {
-            foreach (var item in BulletSplashHelper.Spawn(_randomNumberService,_lob.GetCollisionSplashes(), NumberOfCollisionSplashParticlesToCreate, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees))
+            foreach (var item in BulletSplashHelper.Spawn(_lob.GetCollisionSplashes(), NumberOfCollisionSplashParticlesToCreate, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees))
                 _drawService.DrawEntity(_collisionSplashTexture, item);
         }
 

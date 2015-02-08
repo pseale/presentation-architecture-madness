@@ -10,7 +10,6 @@ namespace MonogameDemoGame.Core.Domain
 {
     public class LineOfBusinessApplication
     {
-        private readonly IRandomNumberService _randomNumberService;
         private const int EnemiesToSpawn = 400;
         private const int NumberOfEnemiesToSpawn = 250;
         private const int ScreenWidth = 640;
@@ -18,7 +17,6 @@ namespace MonogameDemoGame.Core.Domain
         private const int WidthMidpoint = ScreenWidth / 2;
         private const int HeightMidpoint = ScreenHeight / 2;
         private readonly Point Midpoint = new Point(WidthMidpoint, HeightMidpoint);
-        private const int RandomSeedForEnemies = 100;
         private const int PowerUpTicks = 90;
         private const int CollisionFragmentMaxSpeed = 10;
         private const int FragmentsPerExplosion = 36;
@@ -40,11 +38,8 @@ namespace MonogameDemoGame.Core.Domain
         private bool _triggerPowerUpText;
         private int _powerUpCounter;
 
-        public LineOfBusinessApplication(IRandomNumberService randomNumberService)
+        public LineOfBusinessApplication()
         {
-            //these services should not be here
-            _randomNumberService = randomNumberService;
-
             InitializeCamera();
 
             SpawnPlayer();
@@ -72,7 +67,7 @@ namespace MonogameDemoGame.Core.Domain
 
         private void SpawnEnemies()
         {
-            _enemies.AddRange(EnemyHelper.SpawnEnemies(this, RandomSeedForEnemies, NumberOfEnemiesToSpawn));
+            _enemies.AddRange(EnemyHelper.SpawnEnemies(this, NumberOfEnemiesToSpawn));
         }
 
         public Point GetPlayerPosition()
@@ -126,7 +121,7 @@ namespace MonogameDemoGame.Core.Domain
         private void CheckLevel()
         {
             UpdatePowerUpText();
-            var result = _player.TryLevelUp(_randomNumberService);
+            var result = _player.TryLevelUp();
 
             if (result == LevelUpResult.LeveledUp)
                 ShowPowerUpText();
@@ -164,7 +159,7 @@ namespace MonogameDemoGame.Core.Domain
 
         private void CreateExplosion(Enemy enemy)
         {
-            var explosion = ExplosionHelper.Spawn(_randomNumberService, enemy, FragmentsPerExplosion, CollisionFragmentMaxSpeed);
+            var explosion = ExplosionHelper.Spawn(enemy, FragmentsPerExplosion, CollisionFragmentMaxSpeed);
             _explosions.Add(explosion);
         }
 
@@ -223,7 +218,7 @@ namespace MonogameDemoGame.Core.Domain
 
         private void CreateBullets()
         {
-            _bullets.AddRange(BulletHelper.Spawn(_randomNumberService, _player, BulletSpeed, HalfPlayerSize));
+            _bullets.AddRange(BulletHelper.Spawn(_player, BulletSpeed, HalfPlayerSize));
         }
         private void UpdateEnemies()
         {
@@ -292,8 +287,8 @@ namespace MonogameDemoGame.Core.Domain
         public Point CreatePointInBoundary()
         {
             return new Point(
-                _randomNumberService.NextRandomNumberBetweenPositiveAndNegative(GameBorder),
-                _randomNumberService.NextRandomNumberBetweenPositiveAndNegative(GameBorder));
+                RandomNumberService.NextRandomNumberBetweenPositiveAndNegative(GameBorder),
+                RandomNumberService.NextRandomNumberBetweenPositiveAndNegative(GameBorder));
         }
     }
 }

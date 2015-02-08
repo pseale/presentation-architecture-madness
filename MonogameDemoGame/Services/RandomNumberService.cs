@@ -2,46 +2,36 @@
 
 namespace MonogameDemoGame.Services
 {
-    public class RandomNumberService : IRandomNumberService
+    public class RandomNumberService
     {
-        private readonly Random _random;
+        private static readonly Random _random = new Random();
 
-        public RandomNumberService()
-        {
-            _random = new Random();
-        }
-
-        public RandomNumberService(int seed)
-        {
-            _random = new Random(seed);
-        }
-
-        public int GenerateRandomNegativeOrPositiveOne()
+        public static int GenerateRandomNegativeOrPositiveOne()
         {
             return GetRandomBool() ? 1 : -1;
         }
 
-        public int NextRandomNumber(int maxValue)
+        public static int NextRandomNumber(int maxValue)
         {
             return NextRandomNumber(0, maxValue);
         }
 
-        public int NextRandomNumberBetweenPositiveAndNegative(int value)
+        public static int NextRandomNumberBetweenPositiveAndNegative(int value)
         {
             return NextRandomNumber(value);
         }
 
-        public bool GetRandomBool()
+        public static bool GetRandomBool()
         {
             return NextRandomNumber(1) == 1;
         }
 
-        public int NextRandomNumber(int minValue, int maxValue)
+        public static int NextRandomNumber(int minValue, int maxValue)
         {
             return _random.Next(minValue, maxValue + 1);
         }
 
-        public double GenerateRandomNumberClusteredTowardZero(int max)
+        public static double GenerateRandomNumberClusteredTowardZero(int max)
         {
             return Math.Sqrt(NextRandomNumber(max * max));
         }

@@ -9,26 +9,25 @@ namespace MonogameDemoGame.Core
 {
     public static class EnemyHelper
     {
-        public static IEnumerable<Enemy> SpawnEnemies(LineOfBusinessApplication lob, int randomSeedForEnemies, int numberOfEnemiesToSpawn)
+        public static IEnumerable<Enemy> SpawnEnemies(LineOfBusinessApplication lob, int numberOfEnemiesToSpawn)
         {
             var list = new List<Enemy>();
-            var randomNumberService = new RandomNumberService(randomSeedForEnemies);
             foreach (var i in Enumerable.Range(1, numberOfEnemiesToSpawn))
             {
                 list.Add(new Enemy(lob.CreatePointInBoundary().ToVector2(),
-                    GenerateEnemyDirection(randomNumberService)));
+                    GenerateEnemyDirection()));
             }
             return list;
         }
 
-        public static Vector2 GenerateEnemyDirection(IRandomNumberService randomNumberService)
+        public static Vector2 GenerateEnemyDirection()
         {
             int x = 0;
             int y = 0;
-            if (randomNumberService.GetRandomBool())
-                x = randomNumberService.GenerateRandomNegativeOrPositiveOne();
+            if (RandomNumberService.GetRandomBool())
+                x = RandomNumberService.GenerateRandomNegativeOrPositiveOne();
             else
-                y = randomNumberService.GenerateRandomNegativeOrPositiveOne();
+                y = RandomNumberService.GenerateRandomNegativeOrPositiveOne();
 
             var direction = new Vector2(x, y);
             return direction;

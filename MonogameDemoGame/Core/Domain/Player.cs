@@ -44,10 +44,10 @@ namespace MonogameDemoGame.Core.Domain
             Position = Position + MoveDirection;
         }
 
-        private void LevelUp(IRandomNumberService randomNumberService)
+        private void LevelUp()
         {
             _level++;
-            FiringAngles.Add((int)(1 + randomNumberService.GenerateRandomNumberClusteredTowardZero(15)));
+            FiringAngles.Add((int)(1 + RandomNumberService.GenerateRandomNumberClusteredTowardZero(15)));
         }
 
         private bool ShouldLevelUp()
@@ -60,11 +60,11 @@ namespace MonogameDemoGame.Core.Domain
             _xp++;
         }
 
-        public LevelUpResult TryLevelUp(IRandomNumberService _randomNumberService)
+        public LevelUpResult TryLevelUp()
         {
             if (ShouldLevelUp())
             {
-                LevelUp(_randomNumberService);
+                LevelUp();
                 return LevelUpResult.LeveledUp;
             }
 

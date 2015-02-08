@@ -4,13 +4,12 @@ using Microsoft.Xna.Framework;
 using MonogameDemoGame.Core.Domain;
 using MonogameDemoGame.Helpers;
 using MonogameDemoGame.Services;
-using MonogameDemoGame.Structs;
 
 namespace MonogameDemoGame.Core
 {
     public static class BulletSplashHelper
     {
-        public static IEnumerable<Vector2> Spawn(IRandomNumberService randomNumberService, IEnumerable<CollisionSplash> collisionSplashes,
+        public static IEnumerable<Vector2> Spawn(IEnumerable<CollisionSplash> collisionSplashes,
             int NumberOfCollisionSplashParticlesToCreate, int MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees)
         {
             var list = new List<Vector2>();
@@ -20,7 +19,7 @@ namespace MonogameDemoGame.Core
                 var directions = new List<int>();
                 for (int i = 0; i < NumberOfCollisionSplashParticlesToCreate; i++)
                 {
-                    int randomNumber = randomNumberService.NextRandomNumberBetweenPositiveAndNegative(MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees);
+                    int randomNumber = RandomNumberService.NextRandomNumberBetweenPositiveAndNegative(MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees);
 
                     //like squaring, but keeping the negative-ness of the original number
                     directions.Add(randomNumber * Math.Abs(randomNumber));

@@ -28,7 +28,6 @@ namespace MonogameDemoGame
         private const int CollisionSplashSize = 3;
         private const int ExplosionFragmentSize = 8;
         private const int PowerUpTicks = 90;
-        private const int CollisionSplashTicks = 10;
         private const int CollisionFragmentMaxSpeed = 10;
         private const int FragmentsPerExplosion = 36;
         private const float BulletSpeed = 10f;
@@ -59,7 +58,7 @@ namespace MonogameDemoGame
         private List<Bullet> _bullets = new List<Bullet>();
 
         private List<Enemy> _enemies = new List<Enemy>();
-        private List<CollisionSplashStruct> _collisionSplashes = new List<CollisionSplashStruct>();
+        private List<CollisionSplash> _collisionSplashes = new List<CollisionSplash>();
 
         private bool _triggerPowerUpText;
         private int _powerUpCounter;
@@ -266,8 +265,9 @@ namespace MonogameDemoGame
         {
             foreach (var splash in _collisionSplashes.ToArray())
             {
-                splash.SplashCounter++;
-                if (splash.SplashCounter > CollisionSplashTicks)
+                splash.Update();
+
+                if (splash.ShouldBeDeleted())
                     _collisionSplashes.Remove(splash);
             }
         }

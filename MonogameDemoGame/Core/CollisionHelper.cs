@@ -6,14 +6,9 @@ namespace MonogameDemoGame.Core
 {
     public static class CollisionHelper
     {
-        public static CollisionSplashStruct Spawn(Bullet bullet)
+        public static CollisionSplash Spawn(Bullet bullet)
         {
-            return new CollisionSplashStruct()
-            {
-                Position = bullet.Position,
-                Direction = new Vector2() - bullet.Direction,
-                SplashCounter = 0
-            };
+            return new CollisionSplash(bullet.Position, new Vector2() - bullet.Direction);
         }
     }
 }

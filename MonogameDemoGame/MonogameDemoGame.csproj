@@ -48,8 +48,10 @@
     <Compile Include="Core\CollisionHelper.cs" />
     <Compile Include="Core\Domain\Bullet.cs" />
     <Compile Include="Core\Domain\Enemy.cs" />
+    <Compile Include="Core\Domain\EnemyState.cs" />
     <Compile Include="Core\Domain\Explosion.cs" />
     <Compile Include="Core\Domain\ExplosionFragment.cs" />
+    <Compile Include="Core\Domain\ExplosionUpdateResult.cs" />
     <Compile Include="Core\Domain\LevelUpResult.cs" />
     <Compile Include="Core\Domain\Player.cs" />
     <Compile Include="Core\Domain\Shrubbery.cs" />
@@ -75,10 +77,7 @@
     <Compile Include="Services\IRandomNumberService.cs" />
     <Compile Include="Services\RandomNumberService.cs" />
     <Compile Include="Structs\CollisionSplashStruct.cs" />
-    <Compile Include="Structs\EnemyState.cs" />
-    <Compile Include="Structs\ExplosionUpdateResult.cs" />
     <Compile Include="Structs\InputStruct.cs" />
-    <Compile Include="Structs\MouseInputStruct.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.3.0.1695, Culture=neutral, processorArchitecture=MSIL">

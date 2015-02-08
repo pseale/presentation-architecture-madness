@@ -1,4 +1,4 @@
-namespace MonogameDemoGame.Structs
+namespace MonogameDemoGame.Core.Domain
 {
     public enum EnemyState
     {

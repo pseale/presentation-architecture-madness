@@ -9,7 +9,7 @@ namespace MonogameDemoGame.Core
 {
     public static class BulletSplashHelper
     {
-        public static IEnumerable<Vector2> Spawn(IRandomNumberService randomNumberService, IEnumerable<CollisionSplashStruct> collisionSplashes,
+        public static IEnumerable<Vector2> Spawn(IRandomNumberService randomNumberService, IEnumerable<CollisionSplash> collisionSplashes,
             int NumberOfCollisionSplashParticlesToCreate, int MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees)
         {
             var list = new List<Vector2>();

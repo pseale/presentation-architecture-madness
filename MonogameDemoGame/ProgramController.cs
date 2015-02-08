@@ -27,7 +27,6 @@ namespace MonogameDemoGame
         private const int EnemySize = 32;
         private const int CollisionSplashSize = 3;
         private const int ExplosionFragmentSize = 8;
-        private const int ExplosionTicks = 120;
         private const int PowerUpTicks = 90;
         private const int CollisionSplashTicks = 10;
         private const int CollisionFragmentMaxSpeed = 10;
@@ -67,7 +66,7 @@ namespace MonogameDemoGame
         
         private List<Shrubbery> _shrubbery = new List<Shrubbery>();
         
-        private List<ExplosionStruct> _explosions = new List<ExplosionStruct>();
+        private List<Explosion> _explosions = new List<Explosion>();
         private IBoundaryService _boundaryService;
         private IContentService _contentService;
         private IInputService _inputService;
@@ -230,7 +229,7 @@ namespace MonogameDemoGame
         {
             foreach (var explosion in _explosions.ToArray())
             {
-                var result = ExplosionHelper.Update(explosion, ExplosionTicks);
+                var result = explosion.Update();
                 if (result == ExplosionUpdateResult.Remove)
                     _explosions.Remove(explosion);
             }
@@ -403,7 +402,7 @@ namespace MonogameDemoGame
         {
             foreach (var explosion in _explosions)
                 foreach (var fragment in explosion.Fragments)
-                    _drawService.DrawEntity(_explosionTexture, explosion.Position + fragment * explosion.Ticks);
+                    _drawService.DrawEntity(_explosionTexture, explosion.Position + fragment.Position * explosion.Ticks);
         }
 
         private void DrawShrubbery()

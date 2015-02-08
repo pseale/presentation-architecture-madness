@@ -218,8 +218,25 @@ namespace MonogameDemoGame.Core.Domain
 
         private void CreateBullets()
         {
-            _bullets.AddRange(BulletHelper.Spawn(_player, BulletSpeed, HalfPlayerSize));
+            var list = new List<Bullet>();
+
+            var xDelta = _player.FacingDirection.X * BulletSpeed;
+            var yDelta = _player.FacingDirection.Y * BulletSpeed;
+            foreach (var gunAngle in _player.FiringAngles)
+            {
+                var angle = (int)RandomNumberService.GenerateRandomNumberClusteredTowardZero(gunAngle);
+                if (RandomNumberService.GetRandomBool())
+                    angle = -angle;
+
+                var direction = new Vector2(xDelta, yDelta).Rotate(angle);
+
+                var bullet = new Bullet(_player.Position.ToVector2() + (HalfPlayerSize*_player.FacingDirection), direction);
+
+                list.Add(bullet);
+            }
+            _bullets.AddRange(list);
         }
+
         private void UpdateEnemies()
         {
             foreach (var enemy in _enemies)

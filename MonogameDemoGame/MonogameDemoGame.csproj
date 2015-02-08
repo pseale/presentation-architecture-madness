@@ -43,7 +43,6 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Core\BulletHelper.cs" />
     <Compile Include="Core\BulletSplashHelper.cs" />
     <Compile Include="Core\CameraHelper.cs" />
     <Compile Include="Core\CollisionHelper.cs" />

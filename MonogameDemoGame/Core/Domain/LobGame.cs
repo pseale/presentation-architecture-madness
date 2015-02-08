@@ -165,7 +165,15 @@ namespace MonogameDemoGame.Core.Domain
 
         private void CreateSplashEffect(Bullet bullet)
         {
-            _collisionSplashes.Add(CollisionHelper.Spawn(bullet));
+            int splashes = 10;
+            for (int i = 0; i < splashes; i++)
+            {
+                var duration = (int)RandomNumberService.GenerateRandomNumberClusteredTowardZero(10);
+                var oppositeDirection = new Vector2() - bullet.Direction;
+                var direction = oppositeDirection.Rotate(RandomNumberService.GenerateRandomNegativeOrPositiveOne() * (int)RandomNumberService.GenerateRandomNumberClusteredTowardZero(70));
+                direction = direction* ((float)RandomNumberService.NextRandomNumber(1, 100)/50f);
+                _collisionSplashes.Add(new CollisionSplash(bullet.Position + direction, direction, duration));
+            }
         }
 
         private void UpdateBullets()
@@ -257,11 +265,6 @@ namespace MonogameDemoGame.Core.Domain
             return _triggerPowerUpText;
         }
 
-        public IEnumerable<Explosion> GetExplosions()
-        {
-            return _explosions;
-        }
-
         public IEnumerable<Shrubbery> GetShrubbery()
         {
             return _shrubbery;
@@ -275,6 +278,11 @@ namespace MonogameDemoGame.Core.Domain
         public bool OutOfBounds(float position)
         {
             return Math.Abs(position) > _gameBorder;
+        }
+
+        public IEnumerable<ExplosionFragment> GetFragments()
+        {
+            return _explosions.SelectMany(x => x.Fragments).ToArray();
         }
     }
 }

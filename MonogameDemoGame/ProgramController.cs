@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using MonogameDemoGame.Core;
 using MonogameDemoGame.Core.Domain;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonogameDemoGame.Core.Domain.Drawing;
 using MonogameDemoGame.Core.Domain.Spawning;
 using MonogameDemoGame.Services;
 
@@ -19,17 +19,14 @@ namespace MonogameDemoGame
         private const int HeightMidpoint = ScreenHeight / 2;
         private readonly Point Midpoint = new Point(WidthMidpoint, HeightMidpoint);
         private const int BulletSize = 4;
-        private const int EnemySize = 32;
         private const int CollisionSplashSize = 3;
         private const int ExplosionFragmentSize = 8;
         private const int PlayerSize = 32;
         private const int HalfPlayerSize = PlayerSize / 2;
-        private const string PowerUpText = "POWER UP";
         private const int NumberOfCollisionSplashParticlesToCreate = 3;
         private const int MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees = 12;
         private readonly Color BackgroundColor = Color.White;
-        private readonly Color PowerUpTextColor = Color.Black;
-
+        private Dictionary<EntityType, Texture2D> _entityTextures = new Dictionary<EntityType, Texture2D>();
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
@@ -97,6 +94,18 @@ namespace MonogameDemoGame
             LoadFont();
             LoadTexturesFromFile();
             LoadTexturesFromArray();
+            BuildTextureDictionary();
+        }
+
+        private void BuildTextureDictionary()
+        {
+            _entityTextures.Add(EntityType.Player, _texture);
+            _entityTextures.Add(EntityType.Enemy, _enemyTexture);
+            _entityTextures.Add(EntityType.Shrubbery, _shrubberyTexture);
+
+            _entityTextures.Add(EntityType.Bullet, _bulletTexture);
+            _entityTextures.Add(EntityType.ExplosionFragment, _explosionTexture);
+            _entityTextures.Add(EntityType.Splash, _collisionSplashTexture);
         }
 
         private void LoadFont()
@@ -149,6 +158,7 @@ namespace MonogameDemoGame
             var input = _inputService.ProcessInput(_lob.GetPlayerPosition(), _lob.GetCameraPosition());
 
             _lob.Update(input);
+
             base.Update(gameTime);
         }
 
@@ -160,53 +170,20 @@ namespace MonogameDemoGame
         {
             _drawService.InitializeFrame(_lob.GetCameraPosition(), WidthMidpoint, HeightMidpoint, BackgroundColor);
 
-            DrawShrubbery();
-            DrawExplosions();
-            DrawPlayer();
-            DrawBullets(_lob.GetBullets());
-            EnemyHelper.DrawEnemies(_drawService, _lob.GetEnemies(), _enemyTexture, PlayerSize, HalfPlayerSize);
-            DrawSplashes();
-            if (_lob.ShouldTriggerPowerUpText())
+            var vm = ViewModelMapper.CreateViewModel(_lob);
+
+            foreach (var entity in vm.Entities)
             {
-                DrawPowerUpText();
+                if (entity.HasRotation)
+                    _drawService.DrawEntityWithRotation(_entityTextures[entity.Type], entity.Position, entity.Rotation, _entityTextures[entity.Type].Height, _entityTextures[entity.Type].Height/2);
+                else
+                    _drawService.DrawEntity(_entityTextures[entity.Type], entity.Position);
             }
 
+            if (vm.Text.ShouldShowText)
+                _spriteBatch.DrawString(_font, vm.Text.Text, vm.Text.Position, vm.Text.Color);
+
             _drawService.EndFrame(() => base.Draw(gameTime));
-        }
-
-        private void DrawPlayer()
-        {
-            _drawService.DrawEntityWithRotation(_texture, _lob.GetPlayerPosition().ToVector2(), _lob.GetPlayerFacingDirection(), PlayerSize, HalfPlayerSize);
-        }
-
-        private void DrawExplosions()
-        {
-            foreach (var explosion in _lob.GetExplosions())
-                foreach (var fragment in explosion.Fragments)
-                    _drawService.DrawEntity(_explosionTexture, explosion.Position + fragment.Position * explosion.Ticks);
-        }
-
-        private void DrawShrubbery()
-        {
-            foreach (var shrub in _lob.GetShrubbery())
-                _drawService.DrawEntity(_shrubberyTexture, shrub.Position.ToVector2());
-        }
-
-        private void DrawPowerUpText()
-        {
-            _spriteBatch.DrawString(_font, PowerUpText, PowerUpHelper.CalculateTextPosition(_lob.GetPlayerPosition()), PowerUpTextColor);
-        }
-
-        private void DrawSplashes()
-        {
-            foreach (var item in BulletSplashHelper.Spawn(_lob.GetCollisionSplashes(), NumberOfCollisionSplashParticlesToCreate, MaximumSqrtOfAngleToThrowCollisionSplashParticleInDegrees))
-                _drawService.DrawEntity(_collisionSplashTexture, item);
-        }
-
-        private void DrawBullets(IEnumerable<Bullet> bullets)
-        {
-            foreach (var bullet in bullets) 
-                _drawService.DrawEntity(_bulletTexture, new Vector2(bullet.Position.X - BulletSize/2, bullet.Position.Y - BulletSize/2));
         }
     }
 }

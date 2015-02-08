@@ -4,10 +4,11 @@ namespace MonogameDemoGame.Core.Domain
 {
     public class CollisionSplash
     {
-        private const int CollisionSplashTicks = 10;
+        private readonly int _duration;
 
-        public CollisionSplash(Vector2 position, Vector2 direction)
+        public CollisionSplash(Vector2 position, Vector2 direction, int duration)
         {
+            _duration = duration;
             Position = position;
             Direction = direction;
         }
@@ -19,11 +20,12 @@ namespace MonogameDemoGame.Core.Domain
         public void Update()
         {
             SplashCounter++;
+            Position = Position + Direction;
         }
 
         public bool ShouldBeDeleted()
         {
-            return SplashCounter > CollisionSplashTicks;
+            return SplashCounter > _duration;
         }
     }
 }

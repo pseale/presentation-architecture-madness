@@ -18,7 +18,7 @@ namespace MonogameDemoGame.Services
 
         public static int NextRandomNumberBetweenPositiveAndNegative(int value)
         {
-            return NextRandomNumber(value);
+            return NextRandomNumber(-value, value);
         }
 
         public static bool GetRandomBool()
@@ -26,14 +26,14 @@ namespace MonogameDemoGame.Services
             return NextRandomNumber(1) == 1;
         }
 
-        public static int NextRandomNumber(int minValue, int maxValue)
-        {
-            return _random.Next(minValue, maxValue + 1);
-        }
-
         public static double GenerateRandomNumberClusteredTowardZero(int max)
         {
             return Math.Sqrt(NextRandomNumber(max * max));
+        }
+
+        public static int NextRandomNumber(int minValue, int maxValue)
+        {
+            return _random.Next(minValue, maxValue + 1);
         }
     }
 }

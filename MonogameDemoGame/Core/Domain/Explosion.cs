@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using MonogameDemoGame.Structs;
 
 namespace MonogameDemoGame.Core.Domain
 {
@@ -14,7 +13,7 @@ namespace MonogameDemoGame.Core.Domain
         public Explosion(Vector2 position, IEnumerable<Vector2> fragments)
         {
             Position = position;
-            Fragments = new List<ExplosionFragment>(fragments.Select(x => new ExplosionFragment(x)));
+            Fragments = new List<ExplosionFragment>(fragments.Select(x => new ExplosionFragment(Position + x, x)));
         }
 
         public Vector2 Position { get; private set; }
@@ -27,6 +26,9 @@ namespace MonogameDemoGame.Core.Domain
 
             if (_ticks > ExplosionTicks)
                 return ExplosionUpdateResult.Remove;
+
+            foreach (var fragment in Fragments)
+                fragment.Update();
 
             return ExplosionUpdateResult.DoNothing;
         }

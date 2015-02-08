@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MonogameDemoGame.Core;
 using MonogameDemoGame.Core.Domain;
@@ -18,7 +17,6 @@ namespace MonogameDemoGame
         private const int WidthMidpoint = ScreenWidth / 2;
         private const int HeightMidpoint = ScreenHeight / 2;
         private readonly Point Midpoint = new Point(WidthMidpoint, HeightMidpoint);
-        private const int NoFlexZone = 100;
         private const int EnemiesToSpawn = 400;
         private const int RandomSeedForShrubbery = 200;
         private const int RandomSeedForEnemies = 100;
@@ -52,7 +50,7 @@ namespace MonogameDemoGame
         private Texture2D _explosionTexture;
         private SpriteFont _font;
 
-        private Point _cameraPosition;
+        private Camera _camera;
 
         private Player _player;
         private List<Bullet> _bullets = new List<Bullet>();
@@ -83,7 +81,7 @@ namespace MonogameDemoGame
 
         private void InitializeCamera()
         {
-            _cameraPosition = CameraHelper.Spawn(Midpoint);
+            _camera = CameraHelper.Spawn(Midpoint);
         }
 
         private void InitializeMonogame()
@@ -195,7 +193,7 @@ namespace MonogameDemoGame
             if (_inputService.UserIsTryingToExit())
                 Exit();
 
-            var input = _inputService.ProcessInput(Midpoint, _player.Position, _cameraPosition);
+            var input = _inputService.ProcessInput(Midpoint, _player.Position, _camera.Position);
 
             _player.Update(input);
 
@@ -216,7 +214,7 @@ namespace MonogameDemoGame
 
         private void MoveCamera()
         {
-            _cameraPosition = CameraHelper.CalculateNewPosition(_cameraPosition, _player.Position, _player.MoveDirection, NoFlexZone);
+            _camera.Move(_player);
         }
 
         private void MovePlayer()
@@ -366,7 +364,7 @@ namespace MonogameDemoGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            _drawService.InitializeFrame(_cameraPosition, WidthMidpoint, HeightMidpoint, BackgroundColor);
+            _drawService.InitializeFrame(_camera.Position, WidthMidpoint, HeightMidpoint, BackgroundColor);
 
             DrawShrubbery();
             DrawExplosions();

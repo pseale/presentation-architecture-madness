@@ -47,6 +47,7 @@
     <Compile Include="Core\BulletSplashHelper.cs" />
     <Compile Include="Core\CollisionHelper.cs" />
     <Compile Include="Core\Domain\Bullet.cs" />
+    <Compile Include="Core\Domain\Camera.cs" />
     <Compile Include="Core\Domain\Enemy.cs" />
     <Compile Include="Core\Domain\EnemyState.cs" />
     <Compile Include="Core\Domain\Explosion.cs" />

@@ -73,19 +73,11 @@ namespace MonogameDemoGame
         
         private List<ExplosionStruct> _explosions = new List<ExplosionStruct>();
         private IBoundaryService _boundaryService;
+        private ContentService _contentService;
 
         public ProgramController()
         {
-            _randomNumberService = new RandomNumberService();
-            _boundaryService = new BoundaryService(new RandomNumberService());
-
             InitializeMonogame();
-
-            InitializeCamera();
-
-            SpawnPlayer();
-            SpawnEnemies();
-            SpawnShrubbery();
         }
 
         private void SpawnPlayer()
@@ -144,6 +136,16 @@ namespace MonogameDemoGame
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            _randomNumberService = new RandomNumberService();
+            _boundaryService = new BoundaryService(new RandomNumberService());
+            _contentService = new ContentService(GraphicsDevice, Content);
+
+            InitializeCamera();
+
+            SpawnPlayer();
+            SpawnEnemies();
+            SpawnShrubbery();
+
             LoadFont();
             LoadTexturesFromFile();
             LoadTexturesFromArray();
@@ -151,21 +153,21 @@ namespace MonogameDemoGame
 
         private void LoadFont()
         {
-            _font = ContentHelper.LoadFontByName(Content, "Font");
+            _font = _contentService.LoadFontByName("Font");
         }
 
         private void LoadTexturesFromFile()
         {
-            _texture = ContentHelper.LoadTextureFromFile(Content, "a.png");
-            _enemyTexture = ContentHelper.LoadTextureFromFile(Content, "b.png");
-            _shrubberyTexture = ContentHelper.LoadTextureFromFile(Content, "shrubbery.png");
+            _texture = _contentService.LoadTextureFromFile("a.png");
+            _enemyTexture = _contentService.LoadTextureFromFile("b.png");
+            _shrubberyTexture = _contentService.LoadTextureFromFile("shrubbery.png");
         }
 
         private void LoadTexturesFromArray()
         {
-            _bulletTexture = ContentHelper.CreateSquareTexture(GraphicsDevice, Color.Magenta, BulletSize);
-            _collisionSplashTexture = ContentHelper.CreateSquareTexture(GraphicsDevice, Color.Red, CollisionSplashSize);
-            _explosionTexture = ContentHelper.CreateSquareTexture(GraphicsDevice, Color.Red, ExplosionFragmentSize);
+            _bulletTexture = _contentService.CreateSquareTexture(Color.Magenta, BulletSize);
+            _collisionSplashTexture = _contentService.CreateSquareTexture(Color.Red, CollisionSplashSize);
+            _explosionTexture = _contentService.CreateSquareTexture(Color.Red, ExplosionFragmentSize);
         }
 
         /// <summary>

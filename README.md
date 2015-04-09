@@ -15,8 +15,4 @@ This repository contains everything I used to give a presentation on architectur
 
 Installing and running
 ----------------------
-Ok, I have to admit--**I'm not sure this will run on your machine.** I spent an hour or so trying to remove the Monogame template and add back everything it did during build, and I failed to produce a reliable "clean machine" build.
-
-So if you want to run the program, download the newest Monogame via their website, install it onto your machine, then load my project and attempt to build.
-
-Consider fixing the build one of my "TODOs".
+Load the project in Visual Studio, build, and run.

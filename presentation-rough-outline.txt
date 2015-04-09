@@ -6,8 +6,13 @@ Welcome!
 What YOU need to know about me:
  - I am a monster follow on twitter (@pseale)
  - I want you to speak up - arguments are ok - respect among equals - you can make this talk better
+ - You can make this talk better by doing the following:
+   - Speaking from experience
+   - Asking a question
+   - Answering someone else's question
 
 This is a talk about ARCHITECTURE
+
  - a "bottom-up" talk where I show specific examples and infer the higher principle
   - remind me if I forget to explain the higher-level concept
  - As with all architecture, I carry with me ASSUMPTIONS, which I will gloss over quickly here, and which are borne out of my experience as a corporate software developer:

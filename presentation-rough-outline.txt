@@ -6,25 +6,33 @@ Welcome!
 What YOU need to know about me:
  - I am a monster follow on twitter (@pseale)
  - I want you to speak up - arguments are ok - respect among equals - you can make this talk better
+ - You can make this talk better by doing the following:
+   - Speaking from experience
+   - Asking a question
+   - Answering someone else's question
 
 This is a talk about ARCHITECTURE
+
  - a "bottom-up" talk where I show specific examples and infer the higher principle
- 	- remind me if I forget to explain the higher-level concept
+  - remind me if I forget to explain the higher-level concept
  - As with all architecture, I carry with me ASSUMPTIONS, which I will gloss over quickly here, and which are borne out of my experience as a corporate software developer:
    - performance only matters at the network/file layers, not CPU/code
-   - long-term developer velocity is the most important target
+   - long-term developer velocity is the most important goal
  - While discussing architecture, we are banning the following words:
- 	- Bad
- 	- Good
- 	- Testable
- 	- Maintainable
- 	- Robust
- 	- Extensible
- 	- cohesion, lower coupling
- 	- SOLID
- 	- DRY
- 	- "I can have you fired"
+  - Bad
+  - Good
+  - Testable
+  - Maintainable
+  - Robust
+  - Extensible
+  - cohesion, lower coupling
+  - SOLID
+  - DRY
+  - separation of concerns
+  - "I can have you fired"
+
  - Instead, we must discuss costs/benefits via specific scenarios (whether user or developer)
+
 Today we will take a journey together in an orderly descent into MADNESS making discrete changes to our codebase. For each act of this play, we are going to:
  - broadly describe what we are changing
  - show the code diffs
@@ -33,31 +41,115 @@ Today we will take a journey together in an orderly descent into MADNESS making 
 
 - ACT I: BLISSFUL IGNORANCE
  - Minimal code is written in order to satisfy the program requirements
+
+- SHOW THE APP
+  - TAKING INPUT
+     - MOUSE -> rotates player to follow mouse
+     - KEYBOARD -> moves player
+     - CLICK MOUSE -> shooting 
+     - ESC quits
+  - OUTPUT
+    - draw various things, notice some of them move
+    - camera moves with you
+  - INTERACTIONS
+    - things move
+    - enemies have some "behavior"
+    - bullets collide with enemies
+    - enemies lose health and eventually explode
+    - collisions and explosions spawn short-lived fragments
+    - Player gains levels; and with levels, upgrades
+
+
+ -back to Act 1
+
  - Benefits:
    - Easy to trace execution (read from top-to-bottom)
  - Downsides:
    - Duplication, which leads to bugs
+   - Duplication also makes restructuring difficult
    - Classic spaghetti code
+ - ASIDE: This code is PERFECTLY ACCEPTABLE to write in some contexts. What are those contexts?
+   - spikes
+   - really small apps
+   - possibly even crusty, admin-only parts of a larger app
 
  - ACT II: STRUCTURAL PROGRAMMING
-  - behavior is moved into methods to support better coupling and cohesion
+  - behavior is moved into methods to remove duplication, 
+    and to group logic into little named GOTOs (AKA methods)
+  - LIGHTNING MONOGAME TUTORIAL
+    - Update called 30 times per second - do all data munging logic here
+    - How many times is Draw() called per second? It's a mystery like the pyramids
   - Benefits:
     - Easier to reason about code that is grouped by function
       - This means easier troubleshooting
   - Downsides:
     - Harder to read code from top-to-bottom
   - Aside: even without objects, Wwe can separate what we want "delicious sausage" from how it is made "grind up a whole lot of horse ears"
+  - Aside: Where can we find time to practice this kind of abstraction building? How do I find time to do it?
+    - 1. I never feel rushed - this starts at project planning when I commit to estimates, and what happens when I miss an estimate (which I do)
+    - 2. Test projects are the greatest place to try out all these ideas - not that you should spend all your time in the test project, but that you can risk attempting more creative(bad) designs, which is good practice.
 
  - Act III: OBJECT-ORIENTATION
    - behavior + state = objects
    - Benefits
      - objects allow encapsulation of behavior, giving you fewer things to think about
      - COMPOSABILITY - note to self: explain this very carefully & specifically
+       - this is NOT REUSE in the way you think. This means reuse by you, in the future, when you change your design.
    - Downsides:
      - Harder to read code from top-to-bottom
      - You now have the extra mental weight of the objects themselves
+     - Object design is hard - analysis paralysis
    - Aside:
      - Possibly my last practical tip: listen to those who have done object-oriented programming for a long time (Kent Beck), and be wary of everyone else (including me)
+
+ - Act IV: DDD
+   - DDD is a cultural movement - it probably has clearly-defined guiding principles. Probably.
+   - At its core, DDD is defined by the domain and hexagonal architecture. 
+    - The domain is code that is unaware of anything but itself. 
+        - When I learned this the first time, it blew me away.
+    - Services lay around the periphery of the domain, protecting it
+      from everyone else. Services know about the domain, the domain does NOT know
+      about the services surrounding it.
+    - Aside: domain is almost always grafted in with the ORM or document database for convenience.
+    - Here are our services and the pieces of Monogame they talk to: 
+      - Input uses Keyboard and Mouse
+      - Draw uses the SpriteBatch
+      - Texture service uses ContentManager and GraphicsDevice
+
+  - with that overview out of the way, I don't have time to show everything. Here is the "aggregate root":
+    - show Game, point out that outside services ONLY 
+
+    - show remains of the 500 line host program - now it's a "thin controller" working with a "fat model"
+
+  - In review:
+    - DDD is OO done right
+      - it is a "pit of success"
+    - It is also a "plain old pit"
+    - DDD does not fail you - you fail DDD, and it is disappointed 
+    - DDD done wrong is a tragedy
+    - In other words, every DDD codebase has some amount of tragedy
+
+  - Aside: is F# a pit of success - can we ignore the things I'm talking about today, switch 
+    languages to F#, and slowly fall into success? No. (Maybe)
+
+- ACT V: Domain-specific languages
+  -- blah blah we don't have time (by now we msut be over)
+  - here is my best effort in creating an external DSL for this app
+    - it is awful
+  - here is the equivalent C# code 
+    - it becomes more apparent why it is awful
+  - designing DSLs is hard
+  - Mechanically building a DSL is ~rough (requires ANTLR or the like)
+  - so why do it?
+  - See: Razor, XAML. DSLs can be useful.
+
+  - ASIDE: Does Workflow Foundation suffer from the problems other DSLs do? Answer: yes. When do you use Workflow foundation?
+
+  - In review:
+   - With correct abstractions, they are gold
+   - With incorrect abstractions, they're crippling
+   - Incorrect abstractions are very easy to make; correct abstractions are very difficult to discover
+
 
   - ACTS TBD:
     - Table-driven programming
@@ -70,7 +162,15 @@ Today we will take a journey together in an orderly descent into MADNESS making 
     - mixins via dynamic types
     - making everything possible into state machines
 
+
     - Asides to include:
         - chunking theory
         - Conway's Law
         - Miller's Law
+        - Is F# a "pit of success"?
+
+- Takeaways
+  - As you fly higher in the clouds of abstraction, which abstractions you use matter more and more (see DSL example)
+  - With anything you apply, focus on the benefits. If you are not receiving the benefits of the architecture, keep searching. It's not all snake oil. Except when it is in fact, snake oil.
+  - Think of easy, objective ways to raise the bar, then let me know if you figure it out (I haven't).
+  - As a personal note, always 
